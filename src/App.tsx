@@ -41,7 +41,7 @@ function App() {
       />
 
       <TripleSplitPane
-        className="w-full flex-1"
+        className="w-full flex-1 overflow-hidden"
         left={{
           title: "数据来源",
           width: "240px",
@@ -56,6 +56,8 @@ function App() {
           enabled: true,
           width: "240px",
           height: "520px",
+          className: "px-2! py-4!",
+          alwaysOpen: true,
           content: <DataSourcePanel />,
         }}
         center={{
