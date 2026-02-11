@@ -97,7 +97,7 @@ export const SplitPaneItemPrimitive = React.forwardRef<
               <div
                 className={cn(
                   "font-[var(--font-family-cn)]",
-                  "font-[var(--font-weight-600)]",
+                  "font-semibold",
                   "font-size-3",
                   "leading-[var(--line-height-3)]",
                   "text-[var(--text-title)]",
@@ -112,7 +112,7 @@ export const SplitPaneItemPrimitive = React.forwardRef<
               <button
                 type="button"
                 onClick={onCollapsibleClick}
-                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
               >
                 {collapsibleIcon || <PanelLeft className="h-4 w-4" />}
               </button>
