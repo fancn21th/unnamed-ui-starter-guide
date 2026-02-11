@@ -7,11 +7,11 @@ import {
   PageHeaderButtonGroup,
   PageHeaderUser,
 } from "@/components/wuhan/composed/page-header";
-import { MessageSquarePlus, Users} from "lucide-react";
+import { Users} from "lucide-react";
 import { Button } from "./components/wuhan/composed/block-button";
 function App() {
   return (
-    <div className="h-full p-3 flex flex-col gap-3 bg-[var(--bg-neutral-light)]">
+    <div className="h-full p-3 flex flex-col gap-3 overflow-hidden bg-[var(--bg-neutral-light)]">
       <PageHeader
           logo={
             <div className="flex items-center justify-center w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
@@ -35,7 +35,7 @@ function App() {
         />
         
       <TripleSplitPane
-        className="w-full flex-1"
+        className="w-full flex-1 overflow-hidden"
         left={{
           title: "数据来源",
           width: "240px",
