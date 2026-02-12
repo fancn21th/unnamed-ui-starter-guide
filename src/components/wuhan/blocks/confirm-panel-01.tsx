@@ -3,11 +3,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-//#region 动态表单布局容器原语
-const DynamicFormLayoutPrimitive = React.forwardRef<
+//#region 确认面板容器原语
+const ConfirmPanelContainerPrimitive = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, style, ...props }, ref) => {
+>(({ className, ...props }, ref) => {
   return (
     <div
       ref={ref}
@@ -18,19 +18,17 @@ const DynamicFormLayoutPrimitive = React.forwardRef<
         "px-[var(--padding-com-xl)] py-[var(--margin-com-xl)]",
         "rounded-[var(--radius-xl)]",
         "bg-[var(--bg-container-secondary)]",
-        "font-[var(--font-family-cn)]",
         className,
       )}
-      style={{ fontFamily: "var(--font-family-cn)", ...style }}
       {...props}
     />
   );
 });
-DynamicFormLayoutPrimitive.displayName = "DynamicFormLayoutPrimitive";
+ConfirmPanelContainerPrimitive.displayName = "ConfirmPanelContainerPrimitive";
 //#endregion
 
-//#region 动态表单头部原语
-const DynamicFormHeaderPrimitive = React.forwardRef<
+//#region 确认面板头部原语
+const ConfirmPanelHeaderPrimitive = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
@@ -42,11 +40,11 @@ const DynamicFormHeaderPrimitive = React.forwardRef<
     />
   );
 });
-DynamicFormHeaderPrimitive.displayName = "DynamicFormHeaderPrimitive";
+ConfirmPanelHeaderPrimitive.displayName = "ConfirmPanelHeaderPrimitive";
 //#endregion
 
-//#region 动态表单标题原语
-const DynamicFormTitlePrimitive = React.forwardRef<
+//#region 确认面板标题原语
+const ConfirmPanelTitlePrimitive = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
 >(({ className, ...props }, ref) => {
@@ -66,31 +64,11 @@ const DynamicFormTitlePrimitive = React.forwardRef<
     />
   );
 });
-DynamicFormTitlePrimitive.displayName = "DynamicFormTitlePrimitive";
-
-//#region 动态表单的表单主体布局原语
-const DynamicFormBodyLayout = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        "w-full",
-        "flex flex-col",
-        "gap-[var(--gap-xl)]",
-        className,
-      )}
-      {...props}
-    />
-  );
-});
-DynamicFormBodyLayout.displayName = "DynamicFormBodyLayout";
+ConfirmPanelTitlePrimitive.displayName = "ConfirmPanelTitlePrimitive";
 //#endregion
 
-//#region 动态表单的底部操作栏布局原语
-const DynamicFormFooterPrimitive = React.forwardRef<
+//#region 确认面板的底部操作栏原语
+const ConfirmPanelFooterPrimitive = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
@@ -107,13 +85,12 @@ const DynamicFormFooterPrimitive = React.forwardRef<
     />
   );
 });
-DynamicFormFooterPrimitive.displayName = "DynamicFormFooterPrimitive";
+ConfirmPanelFooterPrimitive.displayName = "ConfirmPanelFooterPrimitive";
 //#endregion
 
 export {
-  DynamicFormLayoutPrimitive,
-  DynamicFormHeaderPrimitive,
-  DynamicFormTitlePrimitive,
-  DynamicFormBodyLayout,
-  DynamicFormFooterPrimitive,
+  ConfirmPanelContainerPrimitive,
+  ConfirmPanelHeaderPrimitive,
+  ConfirmPanelTitlePrimitive,
+  ConfirmPanelFooterPrimitive,
 };

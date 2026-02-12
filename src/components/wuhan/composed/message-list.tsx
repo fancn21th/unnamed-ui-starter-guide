@@ -289,7 +289,7 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
       <div ref={ref} className={cn("w-full h-full", className)} {...props}>
         <div
           ref={containerRef}
-          className="w-full h-full overflow-y-auto px-[var(--gap-lg)] py-[var(--gap-md)]"
+          className="w-full h-full overflow-y-auto flex flex-col gap-[var(--gap-2xl)]"
           role="log"
           aria-label="消息列表"
           aria-live="polite"
