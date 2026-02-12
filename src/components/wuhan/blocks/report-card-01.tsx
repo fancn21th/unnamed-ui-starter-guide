@@ -30,6 +30,7 @@ interface ReportCardHeaderPrimitiveProps {
   title?: React.ReactNode;
   /** 图标 */
   icon?: React.ReactNode;
+  [key: string]: any;
   /** 描述文本 */
   description?: React.ReactNode;
   /** 是否显示复选框 */

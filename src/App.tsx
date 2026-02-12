@@ -56,7 +56,6 @@ function App() {
           width: "240px",
           height: "520px",
           className: "px-2! py-4!",
-          alwaysOpen: true,
           content: <DataSourcePanel />,
         }}
         center={{
@@ -71,7 +70,7 @@ function App() {
           minWidth: "360px",
           children: <WorkspacePanel />,
           classNames: {
-            body: "px-2 py-4",
+            body: "p-4",
           },
         }}
       />

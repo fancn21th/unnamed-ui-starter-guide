@@ -45,7 +45,9 @@ export interface ReportCardProps {
   /** 图标 */
   icon?: React.ReactNode;
   /** 宽度 */
-  width?: string;
+  width?: string | number;
+  /** 是否显示复选框 */
+  showCheckbox?: boolean;
   /** 选中状态 */
   selected?: boolean;
   /** 是否禁用 */
@@ -62,8 +64,6 @@ export interface ReportCardProps {
   action?: React.ReactNode;
   /** 是否显示默认操作按钮（仅 action 未提供时生效） */
   showAction?: boolean;
-  /** 是否显示复选框 */
-  showCheckbox?: boolean;
   /** 自定义类名 */
   className?: string;
 }
@@ -77,6 +77,8 @@ export interface ReportCardListProps {
   title?: string;
   /** 卡片列表数据 */
   cards?: ReportCardItem[];
+  /** 是否显示复选框 */
+  showCheckbox?: boolean;
   /** 选中状态变化回调 */
   onSelectChange?: (selected: boolean, id: string) => void;
   /** 编辑回调 */
@@ -91,10 +93,10 @@ export interface ReportCardListProps {
   showCardAction?: boolean;
   /** 自定义类名 */
   className?: string;
-  /** 是否显示复选框 */
-  showCheckbox?: boolean;
   /** 列表容器自定义类名 */
   listClassName?: string;
+  /** 卡片宽度 */
+  cardWidth?: string | number;
 }
 
 // ==================== 操作菜单内容 ====================
@@ -376,6 +378,7 @@ export const ReportCardList = React.forwardRef<
 >((props, ref) => {
   const {
     cards = [],
+    showCheckbox = false,
     onSelectChange,
     onEdit,
     onDelete,
@@ -383,8 +386,8 @@ export const ReportCardList = React.forwardRef<
     cardAction,
     showCardAction,
     className,
-    showCheckbox = true,
     listClassName,
+    cardWidth
   } = props;
 
   // 处理选中变化
@@ -428,6 +431,7 @@ export const ReportCardList = React.forwardRef<
             onEdit={onEdit ? () => onEdit(card.id) : undefined}
             onDelete={onDelete ? () => onDelete(card.id) : undefined}
             onDuplicate={onDuplicate ? () => onDuplicate(card.id) : undefined}
+            width={cardWidth}
           />
         ))}
       </div>
