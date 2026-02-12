@@ -3,7 +3,7 @@ import Sender from "./components/Sender";
 export function ChatView() {
   return (
     <div className="w-full h-full flex flex-col items-center overflow-hidden">
-      <div className="w-[800px] flex-1 overflow-hidden flex flex-col">
+      <div className="flex-1 w-full overflow-hidden flex flex-col ">
         <MessageList />
         <Sender />
       </div>

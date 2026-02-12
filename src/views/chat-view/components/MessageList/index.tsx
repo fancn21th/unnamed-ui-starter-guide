@@ -603,9 +603,9 @@ export function MessageList() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
         <MessageListComponent
-          className="overflow-hidden"
+          className="w-[800px] mx-auto"
           messages={renderedMessages}
           onMessageClick={(msg) => console.log("消息点击:", msg.id)}
           renderContent={(content) => content}

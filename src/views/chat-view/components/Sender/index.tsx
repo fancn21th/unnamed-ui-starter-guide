@@ -8,23 +8,24 @@ export default function Sender() {
     const canSend = value.trim().length > 0;
     return (
         <ResponsiveSender
-        value={value}
-        onChange={setValue}
-        placeholder="使用 buttonGroupChildren 自定义按钮内容"
-        getCanSend={({ value: currentValue }) => currentValue.trim().length > 0}
-        sendDisabled={!canSend}
-        submitOnEnter
-        onOverflowChange={setOverflowStatus}
-        buttonGroupChildren={
-          <SenderResponsiveButtonGroup isOverflow={overflowStatus}>
-            <div className="pr-[var(--gap-sm)] pl-[var(--gap-sm)] gap-[var(--gap-sm)] rounded-[var(--radius-sm)] bg-[var(--bg-neutral-light)]">
-              <span className="font-size-1 text-[var(--text-secondary)]">
-                0个数据源
-              </span>
-            </div>
-            <SenderResponsiveSendButton type="submit" disabled={!canSend} />
-          </SenderResponsiveButtonGroup>
-        }
+          className="w-[800px] mx-auto"
+          value={value}
+          onChange={setValue}
+          placeholder="使用 buttonGroupChildren 自定义按钮内容"
+          getCanSend={({ value: currentValue }) => currentValue.trim().length > 0}
+          sendDisabled={!canSend}
+          submitOnEnter
+          onOverflowChange={setOverflowStatus}
+          buttonGroupChildren={
+            <SenderResponsiveButtonGroup isOverflow={overflowStatus}>
+              <div className="pr-[var(--gap-sm)] pl-[var(--gap-sm)] gap-[var(--gap-sm)] rounded-[var(--radius-sm)] bg-[var(--bg-neutral-light)]">
+                <span className="font-size-1 text-[var(--text-secondary)]">
+                  0个数据源
+                </span>
+              </div>
+              <SenderResponsiveSendButton type="submit" disabled={!canSend} />
+            </SenderResponsiveButtonGroup>
+          }
       />
     );
 }
