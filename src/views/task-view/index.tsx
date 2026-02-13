@@ -46,7 +46,7 @@ export function TaskView() {
         items={initialItems as TaskCardItem[]}
         open={isOpen}
         onOpenChange={setIsOpen}
-        containerClassName="absolute w-full z-100 top-[4px]"
+        containerClassName="absolute w-full z-10 top-[4px]"
       />
     </div>
   );
