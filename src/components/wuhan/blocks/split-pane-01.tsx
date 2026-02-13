@@ -24,6 +24,8 @@ SplitPaneContainerPrimitive.displayName = "SplitPaneContainerPrimitive";
 export interface SplitPaneItemPrimitiveProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 面板标题 */
   panelTitle?: React.ReactNode;
+  /** 头部居中内容（绝对定位在头部中心） */
+  centerHeaderContent?: React.ReactNode;
   /** 折叠图标，默认使用 PanelLeft */
   collapsibleIcon?: React.ReactNode;
   /** 是否显示折叠图标 */
@@ -51,6 +53,7 @@ export const SplitPaneItemPrimitive = React.forwardRef<
   (
     {
       panelTitle,
+      centerHeaderContent,
       collapsibleIcon,
       showCollapsibleIcon = true,
       onCollapsibleClick,
@@ -88,34 +91,83 @@ export const SplitPaneItemPrimitive = React.forwardRef<
             className={cn(
               "h-[48px]",
               "flex items-center",
-              "justify-between px-4 py-3 border-b border-[var(--border-neutral)]",
+              "px-4 border-b border-[var(--border-neutral)]",
               headerClassName,
             )}
           >
-            {/* 紧凑模式只显示图标，正常模式显示标题 */}
-            {!isCompact && (
-              <div
-                className={cn(
-                  "font-[var(--font-family-cn)]",
-                  "font-semibold",
-                  "font-size-3",
-                  "leading-[var(--line-height-3)]",
-                  "text-[var(--text-title)]",
-                )}
-              >
-                {panelTitle}
-              </div>
-            )}
+            {centerHeaderContent ? (
+              // 有居中内容时：使用三栏布局
+              <>
+                {/* 左侧容器：固定60px，放置标题 */}
+                <div className="w-[60px] flex-shrink-0 flex items-center">
+                  {!isCompact && (
+                    <div
+                      className={cn(
+                        "font-[var(--font-family-cn)]",
+                        "font-semibold",
+                        "font-size-3",
+                        "leading-[var(--line-height-3)]",
+                        "text-[var(--text-title)]",
+                      )}
+                    >
+                      {panelTitle}
+                    </div>
+                  )}
+                </div>
 
-            {/* 折叠图标 */}
-            {showCollapsibleIcon && (!isCompact || showIconWhenCompact) && (
-              <button
-                type="button"
-                onClick={onCollapsibleClick}
-                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
-              >
-                {collapsibleIcon || <PanelLeft className="h-4 w-4" />}
-              </button>
+                {/* 中间容器：占满剩余空间，放置居中内容 */}
+                {/* <div className="flex-1 flex items-center justify-center"> */}
+                <div className="flex-1 h-full">
+                  {centerHeaderContent}
+                </div>
+
+                {/* 右侧容器：固定60px，用于平衡布局 */}
+                <div className="w-[60px] flex-shrink-0 flex items-center justify-end">
+                  {/* 折叠图标 */}
+                  {showCollapsibleIcon &&
+                    (!isCompact || showIconWhenCompact) && (
+                      <button
+                        type="button"
+                        onClick={onCollapsibleClick}
+                        className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+                      >
+                        {collapsibleIcon || <PanelLeft className="h-4 w-4" />}
+                      </button>
+                    )}
+                </div>
+              </>
+            ) : (
+              // 无居中内容时：使用默认的两栏布局
+              <>
+                {/* 紧凑模式只显示图标，正常模式显示标题 */}
+                {!isCompact && (
+                  <div
+                    className={cn(
+                      "font-[var(--font-family-cn)]",
+                      "font-semibold",
+                      "font-size-3",
+                      "leading-[var(--line-height-3)]",
+                      "text-[var(--text-title)]",
+                    )}
+                  >
+                    {panelTitle}
+                  </div>
+                )}
+
+                {/* 占位符，将折叠图标推到右侧 */}
+                <div className="flex-1" />
+
+                {/* 折叠图标 */}
+                {showCollapsibleIcon && (!isCompact || showIconWhenCompact) && (
+                  <button
+                    type="button"
+                    onClick={onCollapsibleClick}
+                    className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+                  >
+                    {collapsibleIcon || <PanelLeft className="h-4 w-4" />}
+                  </button>
+                )}
+              </>
             )}
           </div>
 
