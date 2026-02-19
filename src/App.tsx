@@ -2,12 +2,13 @@ import { TripleSplitPane } from "@/components/wuhan/composed/triple-split-pane";
 import { DataSourcePanel } from "@/views/data-source-panel";
 import { WorkspacePanel } from "@/views/workspace-panel";
 import { ChatView } from "@/views/chat-view";
+import { TaskView } from "@/views/task-view";
 import {
   PageHeader,
   PageHeaderButtonGroup,
   PageHeaderUser,
 } from "@/components/wuhan/composed/page-header";
-import { Users} from "lucide-react";
+import { Users } from "lucide-react";
 import { Button } from "./components/wuhan/composed/block-button";
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
           title: "对话",
           minWidth: "280px",
           children: <ChatView />,
+          centerHeaderContent: <TaskView />,
         }}
         right={{
           title: "工作空间",

@@ -24,6 +24,7 @@
 
     /* Linting */
     "strict": true,
+    // 临时关闭未使用变量和参数的错误，后续会逐步修复
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "erasableSyntaxOnly": true,
