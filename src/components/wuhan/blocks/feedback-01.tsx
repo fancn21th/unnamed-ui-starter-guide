@@ -246,7 +246,14 @@ const FeedbackInputPrimitive = React.forwardRef<
         className,
       )}
     >
-      <SidebarHistorySearchInput ref={ref} {...props} />
+      <SidebarHistorySearchInput
+        ref={ref}
+        {...props}
+        className={cn(
+          "placeholder:text-[var(--text-placeholder)]",
+          "caret-[var(--text-brand)]",
+        )}
+      />
     </SidebarHistorySearchContainer>
   );
 });
@@ -274,6 +281,7 @@ const FeedbackSubmitButtonPrimitive = React.forwardRef<
         "bg-[var(--bg-brand)]",
         "text-[var(--text-inverse)]",
         "hover:bg-[var(--bg-brand-hover)]",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
         "transition-colors",
         "transition-opacity",
         "font-[var(--font-family-cn)]",

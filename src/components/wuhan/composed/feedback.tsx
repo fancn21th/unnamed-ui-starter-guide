@@ -163,6 +163,11 @@ export const FeedbackComposed = React.forwardRef<
       [multiple, currentSelected, currentSelectedIds],
     );
 
+    // 是否有选中选项（未选中时提交按钮禁用）
+    const hasSelection = multiple
+      ? currentSelectedIds.length > 0
+      : !!currentSelected;
+
     // 是否显示输入框：仅当 showInputWhenSelected 有值且选中了对应选项时显示
     const shouldShowInput = React.useMemo(() => {
       if (!showInputWhenSelected) return true; // 未配置时保持原有行为（始终显示）
@@ -260,7 +265,10 @@ export const FeedbackComposed = React.forwardRef<
 
           {/* 提交按钮 */}
           <div>
-            <FeedbackSubmitButtonPrimitive type="submit">
+            <FeedbackSubmitButtonPrimitive
+              type="submit"
+              disabled={!hasSelection}
+            >
               {submitLabel}
             </FeedbackSubmitButtonPrimitive>
           </div>
