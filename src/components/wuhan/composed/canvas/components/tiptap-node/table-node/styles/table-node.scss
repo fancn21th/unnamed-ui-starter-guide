@@ -42,16 +42,23 @@
 
 .tiptap th,
 .tiptap td {
-  border: 1px solid var(--tt-table-border-color);
-  padding: var(--tt-table-cell-padding);
+  font-size: var(--font-size-2);
+  line-height: var(--line-height-2);
+  text-align: left;
+  padding: var(--padding-com-lg);
 }
 
 .tiptap table th {
-  background-color: var(--tt-gray-light-a-100);
-  font-weight: 700;
-  text-align: left;
+  background-color: var(--bg-neutral-light);
+  font-weight: 600;
+  color: var(--text-title);
 }
 
+.tiptap table td {
+  background-color: var(--bg-container);
+  font-weight: 400;
+  color: var(--text-primary);
+}
 .ProseMirror .column-resize-handle {
   position: absolute;
   top: 0;
@@ -147,6 +154,7 @@
 .ProseMirror th {
   min-width: auto !important;
 }
+
 .ProseMirror td:not([colwidth]):not(.column-resize-dragging),
 .ProseMirror th:not([colwidth]):not(.column-resize-dragging) {
   /* if there's no explicit width set and the column is not being resized, set a default width */

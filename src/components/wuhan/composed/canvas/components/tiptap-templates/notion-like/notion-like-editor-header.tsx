@@ -1,17 +1,19 @@
-import { ThemeToggle } from "../../tiptap-templates/notion-like/notion-like-editor-theme-toggle"
+import { ThemeToggle } from '../../tiptap-templates/notion-like/notion-like-editor-theme-toggle'
 
 // --- Tiptap UI ---
-import { UndoRedoButton } from "../../tiptap-ui/undo-redo-button"
+import { UndoRedoButton } from '../../tiptap-ui/undo-redo-button'
 
 // --- UI Primitives ---
-import { Spacer } from "../../tiptap-ui-primitive/spacer"
-import { Separator } from "../../tiptap-ui-primitive/separator"
-import { ButtonGroup } from "../../tiptap-ui-primitive/button"
+import { Spacer } from '../../tiptap-ui-primitive/spacer'
+import { Separator } from '../../tiptap-ui-primitive/separator'
+import { ButtonGroup } from '../../tiptap-ui-primitive/button'
 
 // --- Styles ---
-import "../../tiptap-templates/notion-like/notion-like-editor-header.scss"
+import './notion-like-editor-header.scss'
 
-import { CollaborationUsers } from "../../tiptap-templates/notion-like/notion-like-editor-collaboration-users"
+import { CollaborationUsers } from './notion-like-editor-collaboration-users'
+import { EditorClose } from './notion-like-editor-close'
+import { FullscreenButton } from './notion-like-editor-fullscreen'
 
 export function NotionEditorHeader() {
   return (
@@ -30,6 +32,12 @@ export function NotionEditorHeader() {
         <Separator />
 
         <CollaborationUsers />
+
+        <Separator />
+
+        <FullscreenButton />
+
+        <EditorClose />
       </div>
     </header>
   )

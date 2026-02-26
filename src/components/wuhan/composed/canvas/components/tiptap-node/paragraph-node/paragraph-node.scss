@@ -35,10 +35,9 @@
 
   // Paragraph spacing
   p:not(:first-child):not(td p):not(th p) {
-    font-size: 1rem;
-    line-height: 1.6;
-    font-weight: normal;
-    margin-top: 20px;
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-4);
+    font-weight: 400;
   }
 
   // Selection styles
@@ -164,9 +163,8 @@
 .tiptap.ProseMirror {
   // Base styles for inline threads
   .tiptap-thread.tiptap-thread--unresolved.tiptap-thread--inline {
-    transition:
-      color 0.2s ease-in-out,
-      background-color 0.2s ease-in-out;
+    transition: color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
     color: var(--thread-text);
     border-bottom: 2px dashed var(--tt-color-yellow-base);
     font-weight: 600;

@@ -1,47 +1,47 @@
-import { useCallback, useEffect, useRef } from "react"
-import { type Editor } from "@tiptap/react"
+import { useCallback, useEffect, useRef } from 'react'
+import { type Editor } from '@tiptap/react'
 
-import { AiMenuItems } from "../ai-menu/ai-menu-items/ai-menu-items"
+import { AiMenuItems } from '../ai-menu/ai-menu-items/ai-menu-items'
 
 // -- Hooks --
-import { useTiptapEditor } from "../../../hooks/use-tiptap-editor"
-import { useUiEditorState } from "../../../hooks/use-ui-editor-state"
+import { useTiptapEditor } from '../../../hooks/use-tiptap-editor'
+import { useUiEditorState } from '../../../hooks/use-ui-editor-state'
 
 // -- Utils --
 import {
   getSelectedDOMElement,
   selectionHasText,
-} from "../../../lib/tiptap-advanced-utils"
+} from '../../../lib/tiptap-advanced-utils'
 
 // -- Tiptap UI --
-import { AiMenuInputTextarea } from "./ai-menu-input/ai-menu-input"
-import { AiMenuActions } from "./ai-menu-actions/ai-menu-actions"
+import { AiMenuInputTextarea } from './ai-menu-input/ai-menu-input'
+import { AiMenuActions } from './ai-menu-actions/ai-menu-actions'
 
 // -- UI Primitives --
 import {
   Menu,
   MenuContent,
   useFloatingMenuStore,
-} from "../../tiptap-ui-primitive/menu"
-import { Button, ButtonGroup } from "../../tiptap-ui-primitive/button"
+} from '../../tiptap-ui-primitive/menu'
+import { Button, ButtonGroup } from '../../tiptap-ui-primitive/button'
 import {
   ComboboxList,
   ComboboxPopover,
-} from "../../tiptap-ui-primitive/combobox"
-import { Card } from "../../tiptap-ui-primitive/card/card"
+} from '../../tiptap-ui-primitive/combobox'
+import { Card } from '../../tiptap-ui-primitive/card/card'
 
-import { getContextAndInsertAt } from "./ai-menu-utils"
+import { getContextAndInsertAt } from './ai-menu-utils'
 import {
   useAiContentTracker,
   useAiMenuState,
   useAiMenuStateProvider,
   useTextSelectionTracker,
-} from "./ai-menu-hooks"
+} from './ai-menu-hooks'
 
 // -- Icons --
-import { StopCircle2Icon } from "../../tiptap-icons/stop-circle-2-icon"
+import { StopCircle2Icon } from '../../tiptap-icons/stop-circle-2-icon'
 
-import "./ai-menu.scss"
+import './ai-menu.scss'
 
 export function AiMenuStateProvider({
   children,
@@ -102,7 +102,7 @@ export function AiMenuContent({
           insert: true,
           stream: true,
           tone: state.tone,
-          format: "rich-text",
+          format: 'rich-text',
         })
         .run()
     },
@@ -138,7 +138,7 @@ export function AiMenuContent({
   const handleInputOnClose = useCallback(() => {
     if (!editor) return
     if (aiGenerationIsLoading) {
-      editor.commands.aiReject({ type: "reset" })
+      editor.commands.aiReject({ type: 'reset' })
     } else {
       editor.commands.aiAccept()
     }
@@ -185,9 +185,9 @@ export function AiMenuContent({
   const smoothFocusAndScroll = (element: HTMLElement | null) => {
     element?.focus()
     element?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest',
     })
 
     // Ensure the menu back to focus after focusing on the popover
@@ -233,7 +233,7 @@ export function AiMenuContent({
           {aiGenerationHasMessage && !aiGenerationIsLoading && (
             <AiMenuActions
               editor={editor}
-              options={{ tone: state.tone, format: "rich-text" }}
+              options={{ tone: state.tone, format: 'rich-text' }}
               onAccept={handleOnAccept}
               onReject={handleOnReject}
             />
@@ -255,7 +255,7 @@ export function AiMenuContent({
             }}
           >
             <ComboboxList
-              style={{ display: shouldShowList ? "block" : "none" }}
+              style={{ display: shouldShowList ? 'block' : 'none' }}
             >
               <AiMenuItems />
             </ComboboxList>
@@ -272,7 +272,7 @@ export function AiMenuProgress({ editor }: { editor: Editor }) {
   const handleStop = useCallback(() => {
     if (!editor) return
 
-    editor.chain().aiReject({ type: "reset" }).run()
+    editor.chain().aiReject({ type: 'reset' }).run()
     reset()
     editor.commands.resetUiState()
   }, [editor, reset])

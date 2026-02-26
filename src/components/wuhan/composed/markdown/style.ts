@@ -8,6 +8,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   box-sizing: border-box !important;
 
   /* Typography: headings */
+
   h1 {
     font-family: var(--font-family-cn);
     font-size: var(--font-size-5);
@@ -36,6 +37,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Typography: paragraph */
+
   p {
     font-family: var(--font-family-cn);
     font-size: var(--font-size-3);
@@ -46,6 +48,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Blockquote: left bar + tertiary text */
+
   blockquote {
     font-family: var(--font-family-cn) !important;
     font-weight: 400 !important;
@@ -60,6 +63,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Lists: spacing + nested bullets */
+
   ul,
   ol {
     margin-left: var(--margin-com-xs) !important;
@@ -68,16 +72,19 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* 2nd-level ul bullets */
+
   ul ul li {
     list-style-type: circle !important;
   }
 
   /* 3rd-level ul bullets */
+
   ul ul ul li {
     list-style-type: square !important;
   }
 
   /* List item */
+
   li {
     font-size: var(--font-size-3);
     line-height: var(--line-height-4);
@@ -87,11 +94,14 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Tables: basic typography */
+
   table {
     shadow: inherit !important;
     border-radius: inherit !important;
   }
+
   /* Table header */
+
   th {
     color: var(--text-title) !important;
     font-family: var(--font-family-cn) !important;
@@ -103,6 +113,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Table cell */
+
   td {
     font-family: var(--font-family-cn);
     font-size: var(--font-size-2) !important;
@@ -113,6 +124,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Table caption */
+
   caption {
     font-family: var(--font-family-cn);
     font-size: var(--font-size-1);
@@ -124,38 +136,42 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
     font-size: var(--font-size-1) !important;
     line-height: var(--line-height-1) !important;
     border-radius: var(--radius-lg) !important;
-    padding-top: var(--padding-com-md) !important;
-    padding-right: var(--padding-com-md) !important;
-    padding-bottom: var(--padding-com-md) !important;
-    padding-left: var(--padding-com-md) !important;
+    padding: var(--padding-com-md) !important;
     background-color: var(--bg-neutral-light) !important;
   }
+
   .ant-codeHighlighter-header {
     padding: 0;
     background: transparent !important;
   }
+
   .ant-codeHighlighter-code {
     padding: 0;
     border: none !important;
     background: transparent !important;
   }
+
   /* Hide built-in copy button (we use custom hover toolbar) */
+
   .ant-codeHighlighter-header button,
   .ant-codeHighlighter button {
     display: none !important;
   }
+
   .ant-codeHighlighter-header pre,
   .ant-codeHighlighter-code pre {
     padding: 0 !important;
     margin: 0 !important;
     background: transparent !important;
   }
+
   .ant-codeHighlighter-header pre code,
   .ant-codeHighlighter-code pre code {
     padding: 0 !important;
     margin: 0 !important;
     background: transparent !important;
   }
+
   .ant-codeHighlighter .ant-codeHighlighter-header-title {
     font-family: var(--font-mono) !important;
     font-weight: 400;
@@ -163,6 +179,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Inline code */
+
   code {
     font-family: var(--font-mono);
     font-size: var(--font-size-1) !important;
@@ -173,6 +190,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Code block (note: further overridden by StyledCodeScroll) */
+
   pre {
     max-width: 100% !important;
     overflow-x: auto !important;
@@ -189,6 +207,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Tables: layout reset for generic markdown tables */
+
   table {
     width: 100% !important;
     max-width: 100% !important;
@@ -203,6 +222,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Tables: ensure internal elements occupy full width */
+
   table thead,
   table tbody,
   table tfoot {
@@ -216,12 +236,14 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* 确保表格列占满宽度 */
+
   table colgroup,
   table col {
     width: auto !important;
   }
 
   /* Tables: only keep bottom border */
+
   table th,
   table td {
     border: none !important;
@@ -231,11 +253,13 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Tables: remove bottom border for last row */
+
   table tr:last-child td {
     border-bottom: none !important;
   }
 
   /* Tables: keep left/right padding for edge columns */
+
   table th:first-child,
   table td:first-child {
     padding-left: var(--padding-com-lg) !important;
@@ -247,6 +271,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Divider */
+
   hr {
     margin-top: var(--margin-com-2xl) !important;
     margin-bottom: var(--margin-com-2xl) !important;
@@ -257,6 +282,7 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Antd table wrapper: force full width */
+
   .ant-table-wrapper,
   .table {
     width: 100% !important;
@@ -267,20 +293,24 @@ export const StyledMarkdownWrapper = styled(XMarkdown)`
   }
 
   /* Ensure direct table parent doesn't shrink */
+
   * > table {
     width: 100% !important;
     max-width: 100% !important;
   }
+
   .anticon-copy {
     display: none !important;
   }
 
   /* Mermaid */
+
   .ant-mermaid {
     padding: var(--padding-com-md) !important;
   }
 
   /* Sources 引用样式 */
+
   .ant-sources-title-wrapper {
     height: 16px !important;
     min-width: 16px !important;

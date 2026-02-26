@@ -20,26 +20,27 @@
   }
 
   h1 {
-    font-size: 1.5em;
-    font-weight: 700;
-    margin-top: 3em;
+    font-size: var(--font-size-5);
+    line-height: var(--line-height-5);
+    font-weight: 600;
+    margin-top: var(--margin-com-2xl);
+    margin-bottom: var(--margin-com-md);
   }
 
   h2 {
-    font-size: 1.25em;
-    font-weight: 700;
-    margin-top: 2.5em;
+    font-size: var(--font-size-4);
+    line-height: var(--line-height-4);
+    font-weight: 600;
+    margin-top: var(--margin-com-2xl);
+    margin-bottom: var(--margin-com-md);
   }
 
   h3 {
-    font-size: 1.125em;
+    font-size: var(--font-size-3);
+    line-height: var(--line-height-4);
     font-weight: 600;
-    margin-top: 2em;
+    margin-top: var(--margin-com-2xl);
+    margin-bottom: var(--margin-com-md);
   }
 
-  h4 {
-    font-size: 1em;
-    font-weight: 600;
-    margin-top: 2em;
-  }
 }

@@ -449,7 +449,7 @@
     {
       "type": "image",
       "attrs": {
-        "src": "/images/tiptap-ui-placeholder-image.jpg",
+        "src": "https://template.tiptap.dev/images/tiptap-ui-placeholder-image.jpg",
         "alt": "Screenshot 2025-02-23 at 19.22.27",
         "title": "Screenshot 2025-02-23 at 19.22.27",
         "width": null,
