@@ -206,7 +206,7 @@ export const ToggleButton = React.forwardRef<HTMLDivElement, ToggleButtonProps>(
     const values = isControlled ? (valuesProp ?? []) : internalValues;
 
     // 开发环境校验
-    if (process.env.NODE_ENV === "development") {
+    if (import.meta.env.DEV) {
       if (valueProp !== undefined && valuesProp !== undefined) {
         console.warn(
           "[ToggleButton] 不能同时使用 value 和 values，请根据 multiple 选择其一",
