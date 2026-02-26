@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   MessageList as MessageListComponent,
   type MessageItem,
@@ -28,10 +28,8 @@ import {
   DocumentCard,
   type DocumentCardProps,
 } from "@/components/wuhan/composed/document-card";
-import { BookOpen, Copy, FileText, Search, ThumbsDown, ThumbsUp } from "lucide-react";
+import { BookOpen, FileText, Search } from "lucide-react";
 import Markdown from "@/components/wuhan/composed/markdown";
-import { IconButton } from "@/components/wuhan/composed/icon-button";
-import { FeedbackComposed } from "@/components/wuhan/composed/feedback";
 
 // ============================================================================
 // 消息内容类型
@@ -129,129 +127,6 @@ function extractTextFromContent(
   }
   if (content.type === "text") return content.text;
   return "";
-}
-
-// ============================================================================
-// 消息反馈操作按钮
-// ============================================================================
-
-interface MessageFeedbackActionsProps {
-  role: "user" | "ai";
-  content: string | MessageContent | Array<string | MessageContent>;
-  align?: "left" | "right";
-}
-
-function MessageFeedbackActions({
-  role,
-  content,
-  align = "left",
-}: MessageFeedbackActionsProps) {
-  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
-  const [dislikeConfirmed, setDislikeConfirmed] = useState(false);
-  const [likeConfirmed, setLikeConfirmed] = useState(false);
-  const feedbackRef = useRef<HTMLDivElement>(null);
-
-  const textToCopy = extractTextFromContent(content);
-
-  useEffect(() => {
-    if (showFeedbackForm && feedbackRef.current) {
-      requestAnimationFrame(() => {
-        feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      });
-    }
-  }, [showFeedbackForm]);
-
-  const handleCopy = useCallback(async () => {
-    if (!textToCopy) return;
-    try {
-      await navigator.clipboard.writeText(textToCopy);
-    } catch {
-      // fallback for older browsers
-      const textarea = document.createElement("textarea");
-      textarea.value = textToCopy;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-    }
-  }, [textToCopy]);
-
-  const handleDislikeClick = useCallback(() => {
-    if (dislikeConfirmed) return;
-    setShowFeedbackForm(true);
-  }, [dislikeConfirmed]);
-
-  const handleFeedbackSubmit = useCallback(() => {
-    setShowFeedbackForm(false);
-    setDislikeConfirmed(true);
-  }, []);
-
-  const handleFeedbackClose = useCallback(() => {
-    setShowFeedbackForm(false);
-  }, []);
-
-  const handleInputShown = useCallback(() => {
-    feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, []);
-
-  const buttonsAlignClass =
-    align === "right" ? "justify-end" : "justify-start";
-
-  return (
-    <div className="w-full flex flex-col gap-2">
-      <div className={`flex ${buttonsAlignClass} items-center gap-1`}>
-        <IconButton
-          variant="ghost"
-          color="secondary"
-          size="sm"
-          tooltip="复制"
-          onClick={handleCopy}
-          disabled={!textToCopy}
-        >
-          <Copy className="size-4" />
-        </IconButton>
-        {role === "ai" && (
-          <>
-            <IconButton
-              variant={"ghost"}
-              color={likeConfirmed ? "primary" : "secondary"}
-              size="sm"
-              tooltip="点赞"
-              onClick={() => setLikeConfirmed(true)}
-            >
-              <ThumbsUp className="size-4" />
-            </IconButton>
-            <IconButton
-              variant={"ghost"}
-              color={dislikeConfirmed ? "primary" : "secondary"}
-              size="sm"
-              tooltip="点踩"
-              onClick={handleDislikeClick}
-            >
-              <ThumbsDown className="size-4" />
-            </IconButton>
-          </>
-        )}
-      </div>
-      {showFeedbackForm && role === "ai" && (
-        <div ref={feedbackRef} className="w-full">
-          <FeedbackComposed
-            title="有什么问题?"
-            options={[
-              { id: "harmful", label: "有害/不安全" },
-              { id: "false", label: "信息虚假" },
-              { id: "other", label: "其他" },
-            ]}
-            submitLabel="确认"
-            showInputWhenSelected={["other"]}
-            onInputShown={handleInputShown}
-            onSubmit={handleFeedbackSubmit}
-            onClose={handleFeedbackClose}
-          />
-        </div>
-      )}
-    </div>
-  );
 }
 
 // ============================================================================
@@ -738,13 +613,7 @@ export function MessageList() {
         name: avatar.name ?? roleAvatar.name,
         time: avatar.time ?? roleAvatar.time,
       },
-      feedback: (
-        <MessageFeedbackActions
-          role={msg.role}
-          content={msg.content}
-          align={msg.role === "user" ? "right" : "left"}
-        />
-      ),
+      contentForCopy: extractTextFromContent(msg.content),
     };
   });
 
@@ -754,6 +623,7 @@ export function MessageList() {
         <MessageListComponent
           className="w-[800px] mx-auto"
           messages={renderedMessages}
+          showDefaultFeedback
           onMessageClick={(msg) => console.log("消息点击:", msg.id)}
           renderContent={(content) => content}
         />
