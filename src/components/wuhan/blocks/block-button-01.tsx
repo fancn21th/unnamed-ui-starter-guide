@@ -235,7 +235,7 @@ const secondaryColors = {
     ),
     progress: cn(
       "bg-[var(--bg-container)]",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       "border",
       "border-transparent",
     ),
@@ -243,14 +243,14 @@ const secondaryColors = {
   outline: {
     default: cn(
       "bg-[var(--bg-container)]",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       "border-[var(--border-neutral)]",
 
       // hover 状态
-      "hover:text-[var(--text-secondary-hover)]",
+      "hover:text-[var(--text-primary)]",
       "hover:bg-[var(--bg-neutral-light)]",
       // active/pressed 状态
-      "active:text-[var(--text-secondary-active)]",
+      "active:text-[var(--text-primary)]",
       "active:bg-[var(--bg-neutral-light-hover)]",
     ),
     disabled: cn(
@@ -265,12 +265,12 @@ const secondaryColors = {
       "cursor-not-allowed",
       "border-[var(--border-neutral)]",
     ),
-    progress: cn("bg-[var(--bg-container)]", "text-[var(--text-secondary)]"),
+    progress: cn("bg-[var(--bg-container)]", "text-[var(--text-primary)]"),
   },
   link: {
     default: cn(
       "bg-transparent",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       // hover 状态
       "hover:text-[var(--text-brand-hover)]",
       // active/pressed 状态
@@ -286,7 +286,7 @@ const secondaryColors = {
       "text-[var(--text-disable)]",
       "cursor-not-allowed",
     ),
-    progress: cn("bg-transparent", "text-[var(--text-secondary)]"),
+    progress: cn("bg-transparent", "text-[var(--text-primary)]"),
   },
 };
 

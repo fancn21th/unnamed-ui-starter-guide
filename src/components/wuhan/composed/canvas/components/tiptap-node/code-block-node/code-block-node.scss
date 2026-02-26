@@ -1,0 +1,47 @@
+.tiptap.ProseMirror {
+  --tt-inline-code-bg-color: var(--tt-gray-light-a-100);
+  --tt-inline-code-text-color: var(--tt-gray-light-a-700);
+  --tt-inline-code-border-color: var(--tt-gray-light-a-200);
+  --tt-codeblock-bg: var(--tt-gray-light-a-50);
+  --tt-codeblock-text: var(--tt-gray-light-a-800);
+  --tt-codeblock-border: var(--tt-gray-light-a-200);
+
+  .dark & {
+    --tt-inline-code-bg-color: var(--tt-gray-dark-a-100);
+    --tt-inline-code-text-color: var(--tt-gray-dark-a-700);
+    --tt-inline-code-border-color: var(--tt-gray-dark-a-200);
+    --tt-codeblock-bg: var(--tt-gray-dark-a-50);
+    --tt-codeblock-text: var(--tt-gray-dark-a-800);
+    --tt-codeblock-border: var(--tt-gray-dark-a-200);
+  }
+}
+
+/* =====================
+   CODE FORMATTING
+   ===================== */
+.tiptap.ProseMirror {
+  // Inline code
+  code {
+    font-family: var(--font-mono), monospace;
+    font-size: var(--font-size-1);
+    line-height: var(--line-height-1);
+    margin-top: var(--margin-com-xl);
+    margin-bottom: var(--margin-com-xl)
+  }
+
+  // Code blocks
+  pre {
+    background-color: var(--bg-neutral-light);
+    padding: var(--padding-com-md);
+    border-radius: var(--radius-lg);
+    line-height: var(--line-height-1);
+
+    code {
+      background-color: transparent;
+      border: none;
+      border-radius: 0;
+      -webkit-text-fill-color: inherit;
+      color: inherit;
+    }
+  }
+}
