@@ -33,6 +33,8 @@ export interface PanelConfig {
   children?: React.ReactNode;
   /** 面板标题 */
   title?: React.ReactNode;
+  /** 头部居中内容（仅中间面板支持） */
+  centerHeaderContent?: React.ReactNode;
   /** 展开时的宽度（像素或百分比字符串，如 "300px" 或 "20%" ）*/
   width?: string;
   /** 最小宽度（像素或百分比字符串）*/
@@ -129,6 +131,7 @@ export const TripleSplitPane = React.forwardRef<
   const {
     children: centerChildren,
     title: centerTitle,
+    centerHeaderContent,
     minWidth: centerMinWidth = "400px",
     classNames: centerClassNames,
   } = center;
@@ -375,6 +378,7 @@ export const TripleSplitPane = React.forwardRef<
               {centerTitle}
             </div>
           }
+          centerHeaderContent={centerHeaderContent}
           showCollapsibleIcon={false}
           style={{ minWidth: centerMinWidth }}
           containerClassName={centerClassNames?.container}
