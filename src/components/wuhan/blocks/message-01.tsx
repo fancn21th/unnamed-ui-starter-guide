@@ -222,7 +222,7 @@ const MessageAIPrimitive = React.forwardRef<
         </div>
         {feedback && (
           <div
-            className={cn("[&_*]:!box-border")}
+            className={cn("mt-[var(--gap-xs)]", "[&_*]:!box-border")}
             role="group"
             aria-label="Message feedback"
           >
@@ -290,7 +290,7 @@ const MessageUserPrimitive = React.forwardRef<
         </div>
         {feedback && (
           <div
-            className={cn("mt-[var(--gap-md)]", "[&_*]:!box-border")}
+            className={cn("mt-[var(--gap-xs)]", "[&_*]:!box-border")}
             role="group"
             aria-label="Message feedback"
           >

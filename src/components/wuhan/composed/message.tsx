@@ -144,3 +144,7 @@ UserMessage.displayName = "UserMessage";
 
 export type { AIMessageStatus, AIMessageProps, UserMessagePrimitiveProps };
 export { AIMessage, UserMessage };
+export {
+  MessageFeedbackActions,
+  type MessageFeedbackActionsProps,
+} from "./message-feedback";

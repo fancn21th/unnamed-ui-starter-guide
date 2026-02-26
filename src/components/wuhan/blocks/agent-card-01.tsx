@@ -64,8 +64,8 @@ export const AgentCardContainerPrimitive = React.forwardRef<
     { padding: string; gap: string }
   > = {
     sm: { padding: "var(--padding-com-sm)", gap: "var(--gap-sm)" },
-    md: { padding: "var(--padding-com-md)", gap: "var(--gap-md)" },
-    lg: { padding: "var(--padding-com-lg)", gap: "var(--gap-lg)" },
+    md: { padding: "var(--padding-com-lg)", gap: "var(--gap-md)" },
+    lg: { padding: "var(--padding-com-xl)", gap: "var(--gap-lg)" },
   };
 
   const sizeKey: "sm" | "md" | "lg" = size;

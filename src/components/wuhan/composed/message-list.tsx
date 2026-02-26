@@ -4,6 +4,7 @@ import * as React from "react";
 import {
   AIMessage,
   UserMessage,
+  MessageFeedbackActions,
   type AIMessageStatus,
 } from "@/components/wuhan/composed/message";
 import { AvatarHeader } from "@/components/wuhan/composed/avatar-header";
@@ -45,8 +46,10 @@ export interface MessageItem {
   content: React.ReactNode;
   /** 时间戳 */
   timestamp?: number;
-  /** 反馈内容（消息下方的反馈按钮等） */
+  /** 反馈内容（消息下方的反馈按钮等），不传且 showDefaultFeedback 为 true 时使用预设 */
   feedback?: React.ReactNode;
+  /** 用于复制的原始文本（预设反馈的复制功能需要） */
+  contentForCopy?: string;
   /** 头像配置（显示在消息上方） */
   avatar?: MessageAvatar;
 }
@@ -104,6 +107,8 @@ export interface MessageListProps {
   className?: string;
   /** 是否自动滚动到底部 */
   autoScroll?: boolean;
+  /** 当消息未提供 feedback 时，是否使用预设的复制/点赞/点踩/反馈（需提供 contentForCopy 以支持复制） */
+  showDefaultFeedback?: boolean;
   /** 自定义内容渲染器（用于自定义渲染消息内容，如 Markdown） */
   renderContent?: MessageContentRenderer;
   /** 自定义消息渲染器（完全自定义消息项渲染） */
@@ -163,6 +168,7 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
       onMessageClick,
       className,
       autoScroll = true,
+      showDefaultFeedback = false,
       renderContent = defaultContentRenderer,
       renderMessage,
       ...props
@@ -227,9 +233,15 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
                 {renderContent(message.content, message)}
               </UserMessage>
               {/* 反馈区域 - hover 时显示 */}
-              {message.feedback && (
-                <div className="flex justify-end opacity-0 group-hover/message:opacity-100 transition-opacity min-h-[32px]">
-                  {message.feedback}
+              {(message.feedback !== undefined || showDefaultFeedback) && (
+                <div className="flex justify-end opacity-0 group-hover/message:opacity-100 transition-opacity min-h-[32px] mt-[var(--gap-xs)]">
+                  {message.feedback ?? (
+                    <MessageFeedbackActions
+                      role="user"
+                      textToCopy={message.contentForCopy}
+                      align="right"
+                    />
+                  )}
                 </div>
               )}
             </div>
@@ -252,14 +264,20 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
               {renderContent(message.content, message)}
             </AIMessage>
             {/* 反馈区域 - 最后一条 AI 消息始终显示，其他 hover 时显示 */}
-            {message.feedback && (
+            {(message.feedback !== undefined || showDefaultFeedback) && (
               <div
                 className={cn(
-                  "flex justify-start min-h-[32px]",
+                  "flex justify-start min-h-[32px] mt-[var(--gap-xs)]",
                   !isLastAIMessage && "opacity-0 group-hover/message:opacity-100 transition-opacity"
                 )}
               >
-                {message.feedback}
+                {message.feedback ?? (
+                  <MessageFeedbackActions
+                    role="ai"
+                    textToCopy={message.contentForCopy}
+                    align="left"
+                  />
+                )}
               </div>
             )}
           </div>
