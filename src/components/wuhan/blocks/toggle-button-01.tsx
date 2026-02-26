@@ -114,9 +114,9 @@ export const ToggleButtonPrimitive = React.forwardRef<
             // default 状态
             !selected && [
               "bg-[var(--bg-container)]",
-              "text-[var(--text-secondary)]",
+              "text-[var(--text-primary)]",
               !borderless && "hover:bg-[var(--bg-neutral-light)]",
-              !borderless && "hover:text-[var(--text-secondary)]",
+              !borderless && "hover:text-[var(--text-primary)]",
             ],
             // selected 状态
             selected && [
@@ -125,7 +125,7 @@ export const ToggleButtonPrimitive = React.forwardRef<
                 : "bg-transparent",
               "text-[var(--text-brand)]",
               shouldHaveBackground && !borderless
-                ? "hover:bg-[var(--bg-container)]"
+                ? "hover:bg-[var(--bg-brand-light-hover)]"
                 : "hover:bg-transparent",
             ],
           ],
@@ -146,7 +146,7 @@ export const ToggleButtonPrimitive = React.forwardRef<
                 : "bg-transparent",
               "text-[var(--text-brand)]",
               shouldHaveBackground && !borderless
-                ? "hover:bg-[var(--bg-container)]"
+                ? "hover:bg-[var(--bg-brand-light-hover)]"
                 : "hover:bg-transparent",
             ],
           ],

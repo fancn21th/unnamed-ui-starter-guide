@@ -213,7 +213,7 @@ function MessageFeedbackActions({
         {role === "ai" && (
           <>
             <IconButton
-              variant={likeConfirmed ? "solid" : "ghost"}
+              variant={"ghost"}
               color={likeConfirmed ? "primary" : "secondary"}
               size="sm"
               tooltip="点赞"
