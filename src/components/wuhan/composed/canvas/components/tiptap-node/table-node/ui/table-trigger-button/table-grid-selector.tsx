@@ -1,14 +1,14 @@
 import { forwardRef, useMemo, useCallback } from "react"
 
 // --- UI Primitives ---
-import { Button } from "@/components/tiptap-ui-primitive/button"
+import { Button } from "../../../../tiptap-ui-primitive/button"
 
 // --- Lib ---
-import { cn } from "@/lib/tiptap-utils"
+import { cn } from "../../../../../lib/tiptap-utils"
 
 // --- Icons ---
-import { TableColumnIcon } from "@/components/tiptap-icons/table-column-icon"
-import { TableRowIcon } from "@/components/tiptap-icons/table-row-icon"
+import { TableColumnIcon } from "../../../../tiptap-icons/table-column-icon"
+import { TableRowIcon } from "../../../../tiptap-icons/table-row-icon"
 
 import "./table-grid-selector.scss"
 

@@ -3,26 +3,26 @@
 import { forwardRef } from "react"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "../../../../../hooks/use-tiptap-editor"
 
 // --- Tiptap UI ---
-import type { UseTableTriggerButtonConfig } from "@/components/tiptap-node/table-node/ui/table-trigger-button"
-import { useTableTriggerButton } from "@/components/tiptap-node/table-node/ui/table-trigger-button"
+import type { UseTableTriggerButtonConfig } from "../../../../../components/tiptap-node/table-node/ui/table-trigger-button"
+import { useTableTriggerButton } from "../../../../../components/tiptap-node/table-node/ui/table-trigger-button"
 
 // --- Components ---
-import { TableGridSelector } from "@/components/tiptap-node/table-node/ui/table-trigger-button/table-grid-selector"
+import { TableGridSelector } from "../../../../tiptap-node/table-node/ui/table-trigger-button/table-grid-selector"
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
-import { Button } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "../../../../tiptap-ui-primitive/button"
+import { Button } from "../../../../tiptap-ui-primitive/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/tiptap-ui-primitive/popover"
+} from "../../../../tiptap-ui-primitive/popover"
 
 // --- Styles ---
-import { Card, CardBody } from "@/components/tiptap-ui-primitive/card"
+import { Card, CardBody } from "../../../../tiptap-ui-primitive/card"
 
 export interface TableTriggerButtonProps
   extends Omit<ButtonProps, "type">,

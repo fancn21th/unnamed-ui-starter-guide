@@ -1,4 +1,4 @@
-import type { Action } from "@/components/tiptap-ui-primitive/menu"
+import type { Action } from "../../../tiptap-ui-primitive/menu"
 import { type TextOptions } from "@tiptap-pro/extension-ai"
 import type { Editor } from "@tiptap/react"
 

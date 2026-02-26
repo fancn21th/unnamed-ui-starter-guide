@@ -2,13 +2,13 @@ import { useCallback, useState } from "react"
 import type { Editor } from "@tiptap/react"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "../../../../../hooks/use-tiptap-editor"
 
 // --- Lib ---
-import { isExtensionAvailable } from "@/lib/tiptap-utils"
+import { isExtensionAvailable } from "../../../../../lib/tiptap-utils"
 
 // --- Icons ---
-import { TableIcon } from "@/components/tiptap-icons/table-icon"
+import { TableIcon } from "../../../../../components/tiptap-icons/table-icon"
 
 const REQUIRED_EXTENSIONS = ["table"]
 

@@ -9,10 +9,10 @@ import {
   useMemo,
   useState,
 } from "react"
-import { Button } from "@/components/tiptap-ui-primitive/button"
-import { MessageSquareIcon } from "@/components/tiptap-icons/message-square-icon"
-import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
-import "@/components/tiptap-ui-primitive/sidebar/sidebar.scss"
+import { Button } from "../../tiptap-ui-primitive/button"
+import { MessageSquareIcon } from "../../tiptap-icons/message-square-icon"
+import { useIsBreakpoint } from "../../../hooks/use-is-breakpoint"
+import "../../tiptap-ui-primitive/sidebar/sidebar.scss"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7

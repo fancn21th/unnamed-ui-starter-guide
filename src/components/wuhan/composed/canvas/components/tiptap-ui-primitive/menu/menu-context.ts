@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext } from "react"
-import type { MenuContextValue } from "@/components/tiptap-ui-primitive/menu/menu-types"
+import type { MenuContextValue } from "./menu-types"
 
 export const SearchableContext = createContext<boolean>(false)
 

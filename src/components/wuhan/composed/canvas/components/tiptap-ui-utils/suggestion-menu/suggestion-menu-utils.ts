@@ -1,5 +1,5 @@
 import type { Node } from "@tiptap/pm/model"
-import type { SuggestionItem } from "@/components/tiptap-ui-utils/suggestion-menu/suggestion-menu-types"
+import type { SuggestionItem } from "../../tiptap-ui-utils/suggestion-menu/suggestion-menu-types"
 
 /**
  * Calculates the start position of a suggestion command in the text.

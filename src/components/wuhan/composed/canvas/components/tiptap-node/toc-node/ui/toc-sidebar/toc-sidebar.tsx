@@ -5,7 +5,7 @@ import { useToc } from "../../../../../components/tiptap-node/toc-node/context/t
 import type {
   TableOfContentData,
   TableOfContentDataItem,
-} from "../../../../..tiptap/extension-table-of-contents"
+} from "@tiptap/extension-table-of-contents"
 
 import "./toc-sidebar.scss"
 

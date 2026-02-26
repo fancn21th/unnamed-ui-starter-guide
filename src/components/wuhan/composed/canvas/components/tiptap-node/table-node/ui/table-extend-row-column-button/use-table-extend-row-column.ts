@@ -1,4 +1,4 @@
-import type { Orientation } from "@/components/tiptap-node/table-node/lib/tiptap-table-utils"
+import type { Orientation } from "../../../../../components/tiptap-node/table-node/lib/tiptap-table-utils"
 import {
   offset,
   size,
