@@ -246,8 +246,8 @@ function MessageFeedbackActions({
         {role === 'ai' && (
           <>
             <IconButton
-              variant={likeConfirmed ? 'solid' : 'ghost'}
-              color={likeConfirmed ? 'primary' : 'secondary'}
+              variant={"ghost"}
+              color={likeConfirmed ? "primary" : "secondary"}
               size="sm"
               tooltip="点赞"
               onClick={() => setLikeConfirmed(true)}
