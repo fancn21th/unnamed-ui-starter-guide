@@ -287,8 +287,6 @@ export const FileCardContainerPrimitive = React.memo(
             disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
             // hover 状态（非禁用）
             !disabled && "hover:bg-[var(--bg-neutral-light)]",
-            // selected 状态
-            selected && "bg-[var(--bg-brand-light)]",
             // 焦点状态（非禁用）
             !disabled &&
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2",
@@ -618,14 +616,11 @@ export const FileCardActionPrimitive = React.memo(
             "p-[var(--gap-xs)]",
             "transition-all duration-200",
             "flex-shrink-0",
-            // 基础背景 - hover 卡片时显示
-            "bg-[var(--bg-neutral-light-hover)]",
-            // 默认隐藏
+            // 默认隐藏，hover 卡片时显示（此时无底色）
             "opacity-0",
-            // hover 卡片时显示
             "group-hover/file-card:opacity-100",
-            // hover 时颜色加深
-            "group-hover/file-card:hover:bg-[var(--bg-neutral-light)]",
+            // 仅 hover icon 时底色变化
+            "hover:bg-[var(--bg-neutral-light-hover)]",
             // 禁用状态
             disabled && "cursor-not-allowed opacity-50",
             // 焦点状态（非禁用）
@@ -757,13 +752,12 @@ export const FileCardActionPopoverPrimitive = React.memo(
               tabIndex={item.disabled ? -1 : 0}
               aria-disabled={item.disabled}
               className={cn(
-                // 基础布局
-                "flex items-center",
-                "gap-[var(--gap-sm)]",
-                "px-3",
-                "py-2",
-                "rounded-[var(--radius-md)]",
+                // 基础布局（与 report-card 保持一致，使用全局变量）
+                "flex items-center gap-[var(--gap-md)]",
+                "py-[var(--gap-xs)] px-[var(--padding-com-md)]",
+                "rounded-[var(--radius-lg)]",
                 "cursor-pointer",
+                "outline-none",
                 // 文字样式
                 "font-[var(--font-family-cn)]",
                 "font-[var(--font-weight-400)]",
@@ -772,7 +766,11 @@ export const FileCardActionPopoverPrimitive = React.memo(
                 // 交互状态
                 item.disabled
                   ? "text-[var(--text-tertiary)] cursor-not-allowed opacity-50"
-                  : "text-[var(--text-primary)] hover:bg-[var(--bg-neutral-light)]",
+                  : "text-[var(--text-primary)]",
+                !item.disabled &&
+                  (item.danger
+                    ? "hover:bg-[var(--bg-error-light)]"
+                    : "hover:bg-[var(--bg-neutral-light)]"),
                 // 危险操作样式
                 item.danger && !item.disabled && "text-[var(--text-error)]",
                 item.className,
@@ -828,12 +826,14 @@ export const FileCardActionPopoverPrimitive = React.memo(
                 "p-[var(--gap-xs)]",
                 "transition-all duration-200",
                 "flex-shrink-0",
-                // 基础背景 - hover 卡片时显示
-                "bg-[var(--bg-neutral-light-hover)]",
-                // 默认隐藏
+                // 默认隐藏，hover 卡片时显示（此时无底色）
                 "opacity-0",
-                // hover 卡片时显示
                 "group-hover/file-card:opacity-100",
+                // popover 展开时 icon 保持显示且保持底色
+                openValue && "opacity-100",
+                openValue && "bg-[var(--bg-neutral-light-hover)]",
+                // 仅 hover icon 时底色变化
+                "hover:bg-[var(--bg-neutral-light-hover)]",
                 // 禁用状态
                 disabled && "cursor-not-allowed opacity-50",
                 // 焦点状态（非禁用）
@@ -841,8 +841,6 @@ export const FileCardActionPopoverPrimitive = React.memo(
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]",
                 className,
               )}
-              onMouseEnter={() => !disabled && handleOpenChange(true)}
-              onMouseLeave={() => handleOpenChange(false)}
               onKeyDown={(e) => {
                 if (disabled) return;
                 if (e.key === "Enter" || e.key === " ") {
@@ -866,26 +864,21 @@ export const FileCardActionPopoverPrimitive = React.memo(
             className={cn(
               "z-50",
               "min-w-[120px]",
-              "rounded-[var(--radius-lg)]",
+              "rounded-[var(--radius-xl)]",
               "bg-[var(--bg-container)]",
               "border border-[var(--border-neutral)]",
-              "shadow-lg",
-              "p-1",
+              "shadow-[var(--shadow-basic)]",
+              "p-[var(--padding-com-xs)]",
               // 动画
               "data-[state=open]:animate-in data-[state=closed]:animate-out",
               "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
               "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
               "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
             )}
-            sideOffset={4}
+            sideOffset={8}
             align="end"
-            onMouseEnter={() => handleOpenChange(true)}
-            onMouseLeave={() => handleOpenChange(false)}
           >
-            <div
-              role="menu"
-              className={cn("flex flex-col gap-[var(--gap-xs)]")}
-            >
+            <div role="menu" className={cn("flex flex-col")}>
               {renderMenuItems()}
             </div>
           </PopoverPrimitive.Content>

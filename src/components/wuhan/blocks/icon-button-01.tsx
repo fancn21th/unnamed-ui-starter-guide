@@ -228,14 +228,14 @@ const secondaryColors = {
   outline: {
     default: cn(
       "bg-[var(--bg-container)]",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       "border",
       "border-[var(--border-neutral)]",
       // hover 状态
-      "hover:text-[var(--text-secondary-hover)]",
+      "hover:text-[var(--text-primary)]",
       "hover:bg-[var(--bg-neutral-light)]",
       // active/pressed 状态
-      "active:text-[var(--text-secondary-active)]",
+      "active:text-[var(--text-primary)]",
       "active:bg-[var(--bg-neutral-light-hover)]",
     ),
     disabled: cn(
@@ -252,7 +252,7 @@ const secondaryColors = {
   ghost: {
     default: cn(
       "bg-transparent",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       // hover 状态
       "hover:bg-[var(--bg-neutral-light)]",
       // active/pressed 状态
@@ -272,7 +272,7 @@ const secondaryColors = {
   light: {
     default: cn(
       "bg-[var(--bg-secondary-light)]",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       "border",
       "border-[var(--border-secondary-light)]",
       // hover 状态
@@ -285,20 +285,20 @@ const secondaryColors = {
     disabled: cn(
       "bg-[var(--bg-secondary-light)]",
       "opacity-50",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       "cursor-not-allowed",
     ),
     loading: cn(
       "bg-[var(--bg-secondary-light)]",
       "opacity-50",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       "cursor-not-allowed",
     ),
   },
   lightBorderless: {
     default: cn(
       "bg-[var(--bg-secondary-light)]",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       // hover 状态
       "hover:bg-[var(--bg-secondary-light-hover)]",
       // active/pressed 状态
@@ -307,13 +307,13 @@ const secondaryColors = {
     disabled: cn(
       "bg-[var(--bg-secondary-light)]",
       "opacity-50",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       "cursor-not-allowed",
     ),
     loading: cn(
       "bg-[var(--bg-secondary-light)]",
       "opacity-50",
-      "text-[var(--text-secondary)]",
+      "text-[var(--text-primary)]",
       "cursor-not-allowed",
     ),
   },
@@ -474,6 +474,7 @@ const baseStyles = cn(
   "[&_svg]:shrink-0",
   // 圆角
   "rounded-[var(--radius-md)]",
+  "cursor-pointer",
 );
 
 // ==================== 组件实现 ====================

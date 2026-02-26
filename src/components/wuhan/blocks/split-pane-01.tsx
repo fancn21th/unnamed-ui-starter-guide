@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { PanelLeft } from "lucide-react";
+import { IconButtonPrimitive } from "@/components/wuhan/blocks/icon-button-01";
 
 /**
  * SplitPane 容器原语组件
@@ -117,22 +118,21 @@ export const SplitPaneItemPrimitive = React.forwardRef<
 
                 {/* 中间容器：占满剩余空间，放置居中内容 */}
                 {/* <div className="flex-1 flex items-center justify-center"> */}
-                <div className="flex-1 h-full">
-                  {centerHeaderContent}
-                </div>
+                <div className="flex-1 h-full">{centerHeaderContent}</div>
 
                 {/* 右侧容器：固定60px，用于平衡布局 */}
                 <div className="w-[60px] flex-shrink-0 flex items-center justify-end">
                   {/* 折叠图标 */}
                   {showCollapsibleIcon &&
                     (!isCompact || showIconWhenCompact) && (
-                      <button
-                        type="button"
+                      <IconButtonPrimitive
+                        variant="ghost"
+                        color="secondary"
+                        size="sm"
                         onClick={onCollapsibleClick}
-                        className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
                       >
-                        {collapsibleIcon || <PanelLeft className="h-4 w-4" />}
-                      </button>
+                        {collapsibleIcon || <PanelLeft />}
+                      </IconButtonPrimitive>
                     )}
                 </div>
               </>
@@ -159,13 +159,14 @@ export const SplitPaneItemPrimitive = React.forwardRef<
 
                 {/* 折叠图标 */}
                 {showCollapsibleIcon && (!isCompact || showIconWhenCompact) && (
-                  <button
-                    type="button"
+                  <IconButtonPrimitive
+                    variant="ghost"
+                    color="secondary"
+                    size="md"
                     onClick={onCollapsibleClick}
-                    className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
                   >
-                    {collapsibleIcon || <PanelLeft className="h-4 w-4" />}
-                  </button>
+                    {collapsibleIcon || <PanelLeft />}
+                  </IconButtonPrimitive>
                 )}
               </>
             )}

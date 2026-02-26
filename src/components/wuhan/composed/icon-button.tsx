@@ -150,3 +150,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
 );
 
 IconButton.displayName = "IconButton";
+
+// ==================== 类型导出 ====================
+
+// export type { IconButtonProps };
