@@ -90,6 +90,10 @@ function App() {
           minWidth: '280px',
           children: <ChatView />,
           centerHeaderContent: <TaskView />,
+          classNames: {
+            body: 'overflow-hidden',
+            content: 'overflow-hidden h-full',
+          },
         }}
         right={{
           title: '工作空间',
@@ -97,9 +101,6 @@ function App() {
           collapsedWidth: '48px',
           minWidth: '360px',
           children: <WorkspacePanel />,
-          classNames: {
-            body: 'p-4',
-          },
         }}
       />
     </div>
