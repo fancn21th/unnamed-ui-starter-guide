@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+import { Users } from 'lucide-react'
 import { TripleSplitPane } from '@/components/wuhan/composed/triple-split-pane'
 import { DataSourcePanel } from '@/views/data-source-panel'
 import { WorkspacePanel } from '@/views/workspace-panel'
@@ -8,18 +10,34 @@ import {
   PageHeaderButtonGroup,
   PageHeaderUser,
 } from '@/components/wuhan/composed/page-header'
-import { Users } from 'lucide-react'
 import { Button } from './components/wuhan/composed/block-button'
 import { useAppState } from '@/contexts/app-context.lib.ts'
 import Canvas from '@/components/wuhan/composed/canvas'
 
 function App() {
   const { canvasFullScreen } = useAppState()
+  const [isInMidRange, setIsInMidRange] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      // 当屏幕宽度小于 1008px 时收起左侧面板
+      setIsInMidRange(width < 1008)
+    }
+
+    // 初始检查
+    handleResize()
+
+    // 监听窗口大小变化
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   if (canvasFullScreen) {
     return <Canvas />
   }
   return (
-    <div className="h-full p-3 flex flex-col gap-3 overflow-hidden bg-(--bg-neutral-light)">
+    <div className="h-full p-3 flex flex-col gap-3 overflow-hidden bg-(--bg-neutral-light) min-w-[756px]">
       <PageHeader
         logo={
           <div className="flex items-center justify-center w-6 h-6 bg-linear-to-br from-blue-500 to-purple-600 rounded-lg">
@@ -49,11 +67,12 @@ function App() {
 
       <TripleSplitPane
         className="w-full flex-1 overflow-hidden"
+        leftExpandButtonDisabled={isInMidRange}
         left={{
           title: '数据来源',
-          width: '240px',
+          width: isInMidRange ? '0px' : '240px',
           collapsedWidth: '0px',
-          minWidth: '240px',
+          minWidth: isInMidRange ? '0px' : '240px',
           children: <DataSourcePanel />,
           classNames: {
             body: 'px-2 py-4',

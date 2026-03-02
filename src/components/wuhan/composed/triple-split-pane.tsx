@@ -327,7 +327,7 @@ export const TripleSplitPane = React.forwardRef<
       </button>
     );
 
-    if (leftPopoverEnabled && leftPopoverContent && !leftExpandButtonDisabled) {
+    if (leftPopoverEnabled && leftPopoverContent) {
       return (
         <Popover
           open={leftPopoverAlwaysOpen || isLeftPopoverOpen}
