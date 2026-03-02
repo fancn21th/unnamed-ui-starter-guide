@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   FileCardPrimitive,
@@ -72,6 +73,8 @@ export interface FileCardComposedProps {
   actionMenuItems?: FileCardActionMenuItemProps[];
   /** 是否禁用（禁用时不可交互） */
   disabled?: boolean;
+  /** 是否显示边框 */
+  bordered?: boolean;
   /** 选中状态变化回调 */
   onSelectChange?: (selected: boolean, id: string) => void;
   /** 操作按钮点击回调 */
@@ -89,16 +92,26 @@ export interface FileCardListProps {
   title?: string;
   /** 文件列表数据 */
   files?: FileItem[];
-  /** 选中状态 */
+  /** 选中状态（表单组件属性，推荐使用） */
+  value?: Set<string> | string[];
+  /** 选中状态（已废弃，请使用 value） */
   selectedIds?: Set<string> | string[];
   /** 是否禁用 */
   disabled?: boolean;
-  /** 选中状态变化回调 */
+  /** 是否显示边框 */
+  bordered?: boolean;
+  /** 选中状态变化回调（表单组件属性，推荐使用） */
+  onChange?: (selectedIds: Set<string>) => void;
+  /** 选中状态变化回调（已废弃，请使用 onChange） */
   onSelectionChange?: (selectedIds: Set<string>) => void;
   /** 全选/取消全选回调 */
   onSelectAll?: (select: boolean) => void;
   /** 操作按钮点击回调 */
   onActionClick?: (id: string) => void;
+  /** 布局方向 */
+  layout?: "vertical" | "horizontal";
+  /** 卡片间距，支持数字（px）或 CSS 变量字符串 */
+  spacing?: number | string;
   /** 自定义类名 */
   className?: string;
 }
@@ -120,7 +133,7 @@ export function getStatusIcon(status: FileCardStatus): React.ReactNode {
     case "loading":
       return (
         <svg
-          className="w-6 h-6 animate-spin text-[var(--text-brand)]"
+          className="w-6 h-6 animate-spin text-[var(--Text-text-brand)]"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -144,11 +157,13 @@ export function getStatusIcon(status: FileCardStatus): React.ReactNode {
         </svg>
       );
     case "error":
-      return <FileCardErrorIcon className="w-6 h-6 text-[var(--text-error)]" />;
+      return (
+        <FileCardErrorIcon className="w-6 h-6 text-[var(--Text-text-error)]" />
+      );
     case "uploading":
       return (
         <svg
-          className="w-6 h-6 animate-pulse text-[var(--text-brand)]"
+          className="w-6 h-6 animate-pulse text-[var(--Text-text-brand)]"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -165,7 +180,7 @@ export function getStatusIcon(status: FileCardStatus): React.ReactNode {
     case "warning":
       return (
         <svg
-          className="w-6 h-6 text-[var(--text-warning)]"
+          className="w-6 h-6 text-[var(--Text-text-warning)]"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -184,7 +199,7 @@ export function getStatusIcon(status: FileCardStatus): React.ReactNode {
     case "success":
       return (
         <svg
-          className="w-6 h-6 text-[var(--text-success)]"
+          className="w-6 h-6 text-[var(--Text-text-success)]"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -253,6 +268,7 @@ export const FileCard = React.memo(
       selected = false,
       actionMenuItems,
       disabled = false,
+      bordered = false,
       onSelectChange,
       onActionClick,
       className,
@@ -282,6 +298,7 @@ export const FileCard = React.memo(
         selected={selected}
         actionMenuItems={actionMenuItems}
         disabled={disabled}
+        bordered={bordered}
         onSelectChange={handleSelectChange}
         onActionClick={handleActionClick}
         className={className}
@@ -392,20 +409,31 @@ export const FileCardList = React.memo(
     const {
       title = "文件列表",
       files = [],
-      selectedIds = [],
+      value,
+      selectedIds,
       disabled = false,
+      bordered = false,
+      onChange,
       onSelectionChange,
       onSelectAll,
       onActionClick,
       multiSelect = true,
+      layout = "vertical",
+      spacing,
       className,
     } = props;
 
+    // 优先使用 value，向后兼容 selectedIds
+    const currentValue = value ?? selectedIds ?? [];
+
+    // 优先使用 onChange，向后兼容 onSelectionChange
+    const handleChange = onChange ?? onSelectionChange;
+
     // 转换为 Set 以便操作
     const selectedSet = React.useMemo(() => {
-      if (selectedIds instanceof Set) return selectedIds;
-      return new Set(selectedIds);
-    }, [selectedIds]);
+      if (currentValue instanceof Set) return currentValue;
+      return new Set(currentValue);
+    }, [currentValue]);
 
     // 处理选中状态变化
     const handleSelectChange = React.useCallback(
@@ -416,9 +444,9 @@ export const FileCardList = React.memo(
         } else {
           newSelected.delete(id);
         }
-        onSelectionChange?.(newSelected);
+        handleChange?.(newSelected);
       },
-      [selectedSet, onSelectionChange],
+      [selectedSet, handleChange],
     );
 
     // 处理全选/取消全选
@@ -426,13 +454,13 @@ export const FileCardList = React.memo(
       (checked: boolean) => {
         if (checked) {
           const allIds = new Set(files.map((f) => f.id));
-          onSelectionChange?.(allIds);
+          handleChange?.(allIds);
         } else {
-          onSelectionChange?.(new Set());
+          handleChange?.(new Set());
         }
         onSelectAll?.(checked);
       },
-      [files, onSelectionChange, onSelectAll],
+      [files, handleChange, onSelectAll],
     );
 
     // 检查是否全选
@@ -441,17 +469,34 @@ export const FileCardList = React.memo(
     // 计算选中的数量
     const selectedCount = selectedSet.size;
 
+    // 计算间距样式
+    const gapStyle = React.useMemo(() => {
+      if (spacing === undefined) {
+        return "var(--Gap-gap-sm)"; // 默认 16px
+      }
+      if (typeof spacing === "number") {
+        return `${spacing}px`;
+      }
+      return spacing;
+    }, [spacing]);
+
+    // 布局类名
+    const listClassName = cn(
+      "flex",
+      layout === "vertical" ? "flex-col" : "flex-row flex-wrap",
+    );
+
     return (
       <div ref={ref} className={className}>
         {title && (
-          <div className="flex items-center justify-between mb-[var(--margin-com-md)]">
+          <div className="flex items-center justify-between mb-[var(--Margin-margin-com-md)]">
             <h3
               className={cn(
-                "font-[var(--font-family-cn)]",
+                "font-[var(--font-family-CN)]",
                 "font-[var(--font-weight-600)]",
                 "font-size-3",
                 "leading-[var(--line-height-3)]",
-                "text-[var(--text-primary)]",
+                "text-[var(--Text-text-primary)]",
               )}
             >
               {title}
@@ -460,7 +505,7 @@ export const FileCardList = React.memo(
                   className={cn(
                     "ml-2",
                     "text-sm",
-                    "text-[var(--text-tertiary)]",
+                    "text-[var(--Text-text-tertiary)]",
                   )}
                 >
                   ({selectedCount}/{files.length})
@@ -468,22 +513,20 @@ export const FileCardList = React.memo(
               )}
             </h3>
             {multiSelect && files.length > 0 && !disabled && (
-              <button
+              <Button
+                variant="unstyled"
+                size="unstyled"
                 type="button"
                 className={cn(
                   "text-sm",
-                  "text-[var(--text-brand)]",
+                  "text-[var(--Text-text-brand)]",
                   "hover:underline",
-                  "appearance-none",
-                  "border-0",
-                  "bg-transparent",
-                  "p-0",
                   "cursor-pointer",
                 )}
                 onClick={() => handleSelectAll(!allSelected)}
               >
                 {allSelected ? "取消全选" : "全选"}
-              </button>
+              </Button>
             )}
           </div>
         )}
@@ -494,9 +537,9 @@ export const FileCardList = React.memo(
             className={cn(
               "flex items-center justify-center",
               "p-8",
-              "text-[var(--text-tertiary)]",
+              "text-[var(--Text-text-tertiary)]",
               "rounded-[var(--radius-xl)]",
-              "bg-[var(--bg-page)]",
+              "bg-[var(--Page-bg-page)]",
             )}
           >
             暂无文件
@@ -506,7 +549,8 @@ export const FileCardList = React.memo(
         {/* 文件列表 */}
         {files.length > 0 && (
           <div
-            className={cn("flex flex-col gap-[var(--gap-sm)]")}
+            className={listClassName}
+            style={{ gap: gapStyle }}
             role="list"
             aria-label={typeof title === "string" ? title : "文件列表"}
           >
@@ -521,6 +565,7 @@ export const FileCardList = React.memo(
                 actionMenuItems={file.actionMenuItems}
                 selected={selectedSet.has(file.id)}
                 disabled={disabled || file.disabled}
+                bordered={bordered}
                 onSelectChange={(checked) =>
                   handleSelectChange(file.id, checked)
                 }

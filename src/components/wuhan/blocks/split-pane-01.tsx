@@ -83,7 +83,7 @@ export const SplitPaneItemPrimitive = React.forwardRef<
       >
         <div
           className={cn(
-            "flex flex-col h-full bg-[var(--bg-container)]",
+            "flex flex-col h-full bg-[var(--Container-bg-container)]",
             "rounded-[var(--radius-xl)]",
           )}
         >
@@ -92,7 +92,7 @@ export const SplitPaneItemPrimitive = React.forwardRef<
             className={cn(
               "h-[48px]",
               "flex items-center",
-              "px-4 border-b border-[var(--border-neutral)]",
+              "px-4 border-b border-[var(--Border-border-neutral)]",
               headerClassName,
             )}
           >
@@ -104,11 +104,11 @@ export const SplitPaneItemPrimitive = React.forwardRef<
                   {!isCompact && (
                     <div
                       className={cn(
-                        "font-[var(--font-family-cn)]",
+                        "font-[var(--font-family-CN)]",
                         "font-semibold",
                         "font-size-3",
                         "leading-[var(--line-height-3)]",
-                        "text-[var(--text-title)]",
+                        "text-[var(--Text-text-title)]",
                       )}
                     >
                       {panelTitle}
@@ -143,11 +143,11 @@ export const SplitPaneItemPrimitive = React.forwardRef<
                 {!isCompact && (
                   <div
                     className={cn(
-                      "font-[var(--font-family-cn)]",
+                      "font-[var(--font-family-CN)]",
                       "font-semibold",
                       "font-size-3",
                       "leading-[var(--line-height-3)]",
-                      "text-[var(--text-title)]",
+                      "text-[var(--Text-text-title)]",
                     )}
                   >
                     {panelTitle}
@@ -172,10 +172,10 @@ export const SplitPaneItemPrimitive = React.forwardRef<
             )}
           </div>
 
-          {/* Body 部分 - 占满剩余空间 */}
+          {/* Body 部分 - 滚动容器无 padding 使滚动条贴边，内容层保留 padding */}
           {!isCompact && (
-            <div className={cn("flex-1 overflow-auto p-4", bodyClassName)}>
-              {children}
+            <div className="flex-1 overflow-auto min-h-0">
+              <div className={cn("p-4", bodyClassName)}>{children}</div>
             </div>
           )}
         </div>

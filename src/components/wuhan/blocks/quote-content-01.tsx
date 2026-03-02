@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 // ==================== 样式原语层（Primitives）====================
@@ -26,13 +27,13 @@ const QuoteContentPrimitive = React.forwardRef<
       className={cn(
         "w-full",
         "h-[30px]",
-        "gap-[var(--gap-md)]",
+        "gap-[var(--Gap-gap-md)]",
         "rounded-[var(--radius-lg)]",
-        "pt-[var(--padding-com-xs)]",
-        "pr-[var(--padding-com-md)]",
-        "pb-[var(--padding-com-xs)]",
-        "pl-[var(--padding-com-md)]",
-        "bg-[var(--bg-neutral-light)]",
+        "pt-[var(--Padding-padding-com-xs)]",
+        "pr-[var(--Padding-padding-com-md)]",
+        "pb-[var(--Padding-padding-com-xs)]",
+        "pl-[var(--Padding-padding-com-md)]",
+        "bg-[var(--Container-bg-neutral-light)]",
         "flex items-center",
         className,
       )}
@@ -55,7 +56,7 @@ const QuoteContentLeading = React.forwardRef<
       className={cn(
         "shrink-0",
         "flex items-center justify-center",
-        "text-[var(--text-secondary)]",
+        "text-[var(--Text-text-secondary)]",
         className,
       )}
       {...props}
@@ -93,13 +94,13 @@ const QuoteContentText = React.forwardRef<
     <span
       ref={ref}
       className={cn(
-        "font-[var(--font-family-cn)]",
+        "font-[var(--font-family-CN)]",
         "font-[var(--font-weight-400)]",
         "text-sm",
         "leading-[var(--line-height-2)]",
         "tracking-[0px]",
         "align-middle",
-        "text-[var(--text-secondary)]",
+        "text-[var(--Text-text-secondary)]",
         "truncate",
         "block",
         className,
@@ -120,16 +121,17 @@ const QuoteContentCloseButton = React.forwardRef<
   React.ButtonHTMLAttributes<HTMLButtonElement>
 >(({ className, ...props }, ref) => {
   return (
-    <button
+    <Button
       ref={ref}
+      variant="unstyled"
+      size="unstyled"
       type="button"
       className={cn(
-        "appearance-none border-0 bg-transparent p-0",
         "shrink-0",
         "flex items-center justify-center",
         "w-4 h-4",
-        "text-[var(--text-secondary)]",
-        "hover:text-[var(--text-primary)]",
+        "text-[var(--Text-text-secondary)]",
+        "hover:text-[var(--Text-text-primary)]",
         "transition-colors",
         "cursor-pointer",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",

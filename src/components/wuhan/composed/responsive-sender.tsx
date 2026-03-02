@@ -318,10 +318,17 @@ function ResponsiveSenderInner<TAttachment = Attachment>(
     sizeLimit,
   };
 
-  const handleOverflowChange = (overflow: boolean) => {
-    setIsOverflow(overflow);
-    onOverflowChange?.(overflow);
-  };
+  const isOverflowRef = React.useRef(false);
+  isOverflowRef.current = isOverflow;
+  const handleOverflowChange = React.useCallback(
+    (overflow: boolean) => {
+      if (isOverflowRef.current === overflow) return;
+      isOverflowRef.current = overflow;
+      setIsOverflow(overflow);
+      onOverflowChange?.(overflow);
+    },
+    [onOverflowChange],
+  );
 
   const handleSubmit = (event?: React.SyntheticEvent) => {
     onSubmit?.({

@@ -115,13 +115,14 @@ export interface MessageListProps {
   renderMessage?: MessageRenderer;
 }
 
+/** 自动滚动时认为用户「在底部」的阈值（px） */
+const SCROLL_THRESHOLD = 80;
+
 /**
  * 默认的内容渲染器
  * @internal
  */
-function defaultContentRenderer(
-  content: React.ReactNode,
-): React.ReactNode {
+function defaultContentRenderer(content: React.ReactNode): React.ReactNode {
   return content;
 }
 
@@ -133,6 +134,150 @@ function getDefaultName(role: MessageRole): string {
   return role === "user" ? "User" : "AI";
 }
 
+/**
+ * 类型守卫：是否为 AI 消息
+ * @internal
+ */
+function isAIMessageItem(
+  msg: MessageItem | AIMessageItem | UserMessageItem,
+): msg is AIMessageItem {
+  return msg.role === "ai";
+}
+
+/** MessageListItem 内部 props，用于 memo 比较 */
+interface MessageListItemProps {
+  message: MessageItem | AIMessageItem | UserMessageItem;
+  index: number;
+  isLastAIMessage: boolean;
+  onMessageClick?: (message: MessageItem) => void;
+  renderContent: MessageContentRenderer;
+  renderMessage?: MessageRenderer;
+  showDefaultFeedback: boolean;
+}
+
+/**
+ * 渲染头像（纯函数，提取到组件外避免闭包）
+ * @internal
+ */
+function renderAvatarNode(
+  avatar: MessageAvatar | undefined,
+  role: MessageRole,
+): React.ReactNode {
+  if (!avatar) return null;
+  return (
+    <AvatarHeader
+      src={avatar.src}
+      icon={avatar.icon}
+      size={avatar.size}
+      name={avatar.name ?? getDefaultName(role)}
+      time={avatar.time}
+    />
+  );
+}
+
+/**
+ * 单条消息项 - 使用 React.memo 避免无关消息的重复渲染
+ * @internal
+ */
+const MessageListItem = React.memo(function MessageListItem({
+  message,
+  isLastAIMessage,
+  onMessageClick,
+  renderContent,
+  renderMessage,
+  showDefaultFeedback,
+}: MessageListItemProps) {
+  const handleClick = React.useCallback(() => {
+    onMessageClick?.(message);
+  }, [onMessageClick, message]);
+
+  const defaultRender = React.useCallback(() => {
+    const isUser = message.role === "user";
+    const align = isUser ? "right" : "left";
+    const avatarNode = renderAvatarNode(message.avatar, message.role);
+    const messageContainerClass = cn(
+      align === "right" && "flex flex-col items-end",
+    );
+
+    if (isUser) {
+      return (
+        <div
+          className={cn(
+            align === "right" &&
+              "flex flex-col gap-[var(--Gap-gap-lg)] items-end",
+            "group/message",
+          )}
+        >
+          {avatarNode}
+          <div className={messageContainerClass}>
+            <UserMessage onClick={handleClick}>
+              {renderContent(message.content, message)}
+            </UserMessage>
+            {(message.feedback !== undefined || showDefaultFeedback) && (
+              <div className="flex justify-end opacity-0 group-hover/message:opacity-100 transition-opacity min-h-[32px] mt-[var(--Gap-gap-xs)]">
+                {message.feedback ?? (
+                  <MessageFeedbackActions
+                    role="user"
+                    textToCopy={message.contentForCopy}
+                    align="right"
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    if (isAIMessageItem(message)) {
+      return (
+        <div className="group/message">
+          {avatarNode}
+          <div className={messageContainerClass}>
+            <AIMessage
+              status={message.status}
+              generatingContent={message.generatingContent}
+              errorContent={message.errorContent}
+              onClick={handleClick}
+            >
+              {renderContent(message.content, message)}
+            </AIMessage>
+            {(message.feedback !== undefined || showDefaultFeedback) && (
+              <div
+                className={cn(
+                  "flex justify-start min-h-[32px] mt-[var(--Gap-gap-xs)]",
+                  !isLastAIMessage &&
+                    "opacity-0 group-hover/message:opacity-100 transition-opacity",
+                )}
+              >
+                {message.feedback ?? (
+                  <MessageFeedbackActions
+                    role="ai"
+                    textToCopy={message.contentForCopy}
+                    align="left"
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  }, [
+    message,
+    isLastAIMessage,
+    handleClick,
+    renderContent,
+    showDefaultFeedback,
+  ]);
+
+  if (renderMessage) {
+    return <>{renderMessage(message, defaultRender)}</>;
+  }
+  return <>{defaultRender()}</>;
+});
 
 /**
  * 消息列表组件
@@ -176,149 +321,87 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
     ref,
   ) => {
     const containerRef = React.useRef<HTMLDivElement>(null);
+    const isUserNearBottomRef = React.useRef(true);
 
-    // 自动滚动到底部
+    const messagesLength = messages.length;
+    const lastMessage =
+      messagesLength > 0 ? (messages[messagesLength - 1] ?? null) : null;
+
+    // 智能自动滚动：仅当用户靠近底部且消息有变化时滚动（含流式更新）
     React.useEffect(() => {
-      if (autoScroll && containerRef.current) {
-        containerRef.current.scrollTop = containerRef.current.scrollHeight;
-      }
-    }, [messages, autoScroll]);
+      if (!autoScroll || !containerRef.current || messagesLength === 0) return;
 
-    // 渲染头像
-    const renderAvatar = (avatar: MessageAvatar | undefined, role: MessageRole): React.ReactNode => {
-      if (!avatar) return null;
+      if (!isUserNearBottomRef.current) return;
 
-      return (
-        <AvatarHeader
-          src={avatar.src}
-          icon={avatar.icon}
-          size={avatar.size}
-          name={avatar.name ?? getDefaultName(role)}
-          time={avatar.time}
+      const container = containerRef.current;
+      requestAnimationFrame(() => {
+        if (container) {
+          container.scrollTop = container.scrollHeight;
+        }
+      });
+    }, [autoScroll, messagesLength, lastMessage]);
 
-        />
-      );
-    };
+    // 追踪用户滚动位置，用于智能自动滚动
+    const handleScroll = React.useCallback(() => {
+      const container = containerRef.current;
+      if (!container) return;
 
-    // 渲染单条消息的默认实现
-    const renderDefaultMessage = (
-      message: MessageItem | AIMessageItem | UserMessageItem,
-      isLastAIMessage: boolean,
-    ): React.ReactNode => {
-      const isUser = message.role === "user";
-      const align = isUser ? "right" : "left";
-      const avatar = message.avatar;
+      const { scrollHeight, scrollTop, clientHeight } = container;
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+      isUserNearBottomRef.current = distanceFromBottom <= SCROLL_THRESHOLD;
+    }, []);
 
-      // 渲染头像（根据对齐方向）
-      const avatarNode = renderAvatar(avatar, message.role);
+    const emptyContent = React.useMemo(
+      () => (
+        <div className="flex items-center justify-center h-full text-[var(--Text-text-tertiary)] text-sm">
+          暂无消息
+        </div>
+      ),
+      [],
+    );
 
-      // 消息容器类名
-      const messageContainerClass = cn(
-        align === "right" && "flex flex-col items-end",
-      );
+    const messageItems = React.useMemo(() => {
+      if (messagesLength === 0) return null;
 
-      // 处理用户消息
-      if (isUser) {
-        return (
-          <div
+      const items: React.ReactNode[] = [];
+      for (let i = 0; i < messagesLength; i++) {
+        const message = messages[i];
+        const isLastAIMessage =
+          message.role === "ai" && i === messagesLength - 1;
+        items.push(
+          <MessageListItem
             key={message.id}
-            className={cn(
-              align === "right" && "flex flex-col gap-[var(--gap-lg)] items-end",
-              "group/message"
-            )}
-          >
-            {avatarNode}
-            <div className={messageContainerClass}>
-              <UserMessage onClick={() => onMessageClick?.(message)}>
-                {renderContent(message.content, message)}
-              </UserMessage>
-              {/* 反馈区域 - hover 时显示 */}
-              {(message.feedback !== undefined || showDefaultFeedback) && (
-                <div className="flex justify-end opacity-0 group-hover/message:opacity-100 transition-opacity min-h-[32px] mt-[var(--gap-xs)]">
-                  {message.feedback ?? (
-                    <MessageFeedbackActions
-                      role="user"
-                      textToCopy={message.contentForCopy}
-                      align="right"
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+            message={message}
+            index={i}
+            isLastAIMessage={isLastAIMessage}
+            onMessageClick={onMessageClick}
+            renderContent={renderContent}
+            renderMessage={renderMessage}
+            showDefaultFeedback={showDefaultFeedback}
+          />,
         );
       }
-
-      // 处理 AI 消息
-      const aiMsg = message as AIMessageItem;
-      return (
-        <div key={message.id} className="group/message">
-          {avatarNode}
-          <div className={messageContainerClass}>
-            <AIMessage
-              status={aiMsg.status}
-              generatingContent={aiMsg.generatingContent}
-              errorContent={aiMsg.errorContent}
-              onClick={() => onMessageClick?.(message)}
-            >
-              {renderContent(message.content, message)}
-            </AIMessage>
-            {/* 反馈区域 - 最后一条 AI 消息始终显示，其他 hover 时显示 */}
-            {(message.feedback !== undefined || showDefaultFeedback) && (
-              <div
-                className={cn(
-                  "flex justify-start min-h-[32px] mt-[var(--gap-xs)]",
-                  !isLastAIMessage && "opacity-0 group-hover/message:opacity-100 transition-opacity"
-                )}
-              >
-                {message.feedback ?? (
-                  <MessageFeedbackActions
-                    role="ai"
-                    textToCopy={message.contentForCopy}
-                    align="left"
-                  />
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    };
-
-    // 渲染单条消息（支持自定义渲染器）
-    const renderMessageItem = (
-      message: MessageItem | AIMessageItem | UserMessageItem,
-      index: number,
-    ): React.ReactNode => {
-      // 判断是否是最后一条 AI 消息
-      const isLastAIMessage = message.role === "ai" && (
-        index === messages.length - 1
-      );
-
-      if (renderMessage) {
-        // 使用自定义渲染器
-        return renderMessage(message, () => renderDefaultMessage(message, isLastAIMessage));
-      }
-      // 使用默认渲染
-      return renderDefaultMessage(message, isLastAIMessage);
-    };
+      return items;
+    }, [
+      messages,
+      messagesLength,
+      onMessageClick,
+      renderContent,
+      renderMessage,
+      showDefaultFeedback,
+    ]);
 
     return (
       <div ref={ref} className={cn("w-full h-full", className)} {...props}>
         <div
           ref={containerRef}
-          className="w-full h-full flex flex-col gap-[var(--gap-2xl)]"
+          className="w-full h-full overflow-y-auto flex flex-col gap-[var(--Gap-gap-2xl)]"
           role="log"
           aria-label="消息列表"
           aria-live="polite"
+          onScroll={handleScroll}
         >
-          {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-[var(--text-tertiary)] text-sm">
-              暂无消息
-            </div>
-          ) : (
-            messages.map((message, index) => renderMessageItem(message, index))
-          )}
+          {messagesLength === 0 ? emptyContent : messageItems}
         </div>
       </div>
     );

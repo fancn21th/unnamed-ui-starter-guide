@@ -116,9 +116,9 @@
   --code-highlight: #f0f0f4;
   --code-number: #9e9ca6;
   
-  /* 文本选择 */
-  --selection: #1e1d26;
-  --selection-foreground: #ffffff;
+  /* 文本选择 - 使用 brand-light-hover */
+  --selection: var(--bg-brand-light-hover);
+  --selection-foreground: var(--foreground);
   
   /* Neutral 颜色 - Light 主题 */
   --neutral-0: #ffffff;
@@ -351,9 +351,9 @@
   --code-highlight: #232326;
   --code-number: #7c7a85;
   
-  /* 文本选择 */
-  --selection: #b2afba;
-  --selection-foreground: #141414;
+  /* 文本选择 - 使用 brand-light-hover */
+  --selection: var(--bg-brand-light-hover);
+  --selection-foreground: var(--foreground);
   
   /* Neutral 颜色 - Dark 主题 */
   --neutral-0: #000000;
