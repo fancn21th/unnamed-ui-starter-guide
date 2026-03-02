@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -71,7 +71,7 @@ const AttachmentCardPrimitive = React.forwardRef<
         buttonVariants({ variant, size }),
         "relative",
         "flex items-center",
-        "bg-[var(--bg-neutral-light)]",
+        "bg-[var(--Container-bg-neutral-light)]",
         "rounded-[var(--radius-xl)]",
         "transition-colors",
         "group/card",
@@ -151,7 +151,7 @@ const AttachmentCardTitle = React.forwardRef<
         titleRef.current = node;
       }}
       className={cn(
-        "font-[var(--font-family-cn)]",
+        "font-[var(--font-family-CN)]",
         "font-[var(--font-weight-400)]",
         "font-size-3",
         "leading-[var(--line-height-2)]",
@@ -189,10 +189,10 @@ const AttachmentCardMeta = React.forwardRef<
     <span
       ref={ref}
       className={cn(
-        "font-[var(--font-family-cn)]",
+        "font-[var(--font-family-CN)]",
         "font-[var(--font-weight-400)]",
         "leading-[var(--line-height-1)]",
-        "text-[var(--text-tertiary)]",
+        "text-[var(--Text-text-tertiary)]",
         className,
       )}
       style={{
@@ -213,25 +213,26 @@ const AttachmentCardDeleteButton = React.forwardRef<
   React.ButtonHTMLAttributes<HTMLButtonElement>
 >(({ className, ...props }, ref) => {
   return (
-    <button
+    <Button
       ref={ref}
+      variant="unstyled"
+      size="unstyled"
       type="button"
       className={cn(
-        "appearance-none border-0 bg-transparent p-0",
         "absolute",
         "-top-1 -right-1",
         "z-10",
         "w-5 h-5",
         "rounded-full",
-        "bg-[var(--bg-container)]",
-        "border border-[var(--border-neutral)]",
+        "bg-[var(--Container-bg-container)]",
+        "border border-[var(--Border-border-neutral)]",
         "shadow-sm",
         "flex items-center justify-center",
         "cursor-pointer",
         "opacity-0 pointer-events-none",
         "group-hover/card:opacity-100 group-hover/card:pointer-events-auto",
         "transition-opacity duration-150",
-        "hover:bg-[var(--bg-neutral-light)]",
+        "hover:bg-[var(--Container-bg-neutral-light)]",
         "transition-colors",
         className,
       )}
@@ -256,9 +257,9 @@ const AttachmentLoadingIndicator = React.forwardRef<
       aria-label="Loading"
       className={cn(
         "w-5 h-5 rounded-full",
-        "border-2 border-[var(--border-brand)]",
-        "border-t-[var(--divider-neutral-basic)]",
-        "bg-[var(--bg-container)]",
+        "border-2 border-[var(--Border-border-brand)]",
+        "border-t-[var(--Border-divider-neutral-basic)]",
+        "bg-[var(--Container-bg-container)]",
         "animate-spin",
         className,
       )}
@@ -468,31 +469,32 @@ function AttachmentListPrimitive({
               width: "40px",
               height: "56px",
               padding: "8px",
-              background: `linear-gradient(90deg, var(--bg-container) 0%, var(--bg-container) 40%, transparent 100%)`,
+              background: `linear-gradient(90deg, var(--Container-bg-container) 0%, var(--Container-bg-container) 40%, transparent 100%)`,
             }}
             aria-hidden="true"
           />
           {/* 按钮 */}
-          <button
+          <Button
+            variant="unstyled"
+            size="unstyled"
             type="button"
             onClick={() => scroll("left")}
             className={cn(
-              "appearance-none border-0 bg-transparent p-0",
               "absolute left-2 top-1/2 -translate-y-1/2 z-10",
               "w-6 h-6",
               "rounded-[var(--radius-md)]",
-              "bg-[var(--bg-container)]",
-              "border border-[var(--border-neutral)]",
-              "p-[var(--padding-com-xs)]",
+              "bg-[var(--Container-bg-container)]",
+              "border border-[var(--Border-border-neutral)]",
+              "p-[var(--Padding-padding-com-xs)]",
               "flex items-center justify-center",
-              "hover:bg-[var(--bg-neutral-light)]",
+              "hover:bg-[var(--Container-bg-neutral-light)]",
               "transition-colors",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
             )}
             aria-label="Scroll left"
           >
             {leftScrollIcon || <ChevronLeft className="w-4 h-4" />}
-          </button>
+          </Button>
         </>
       )}
 
@@ -506,31 +508,32 @@ function AttachmentListPrimitive({
               width: "40px",
               height: "56px",
               padding: "8px",
-              background: `linear-gradient(270deg, var(--bg-container) 0%, var(--bg-container) 40%, transparent 100%)`,
+              background: `linear-gradient(270deg, var(--Container-bg-container) 0%, var(--Container-bg-container) 40%, transparent 100%)`,
             }}
             aria-hidden="true"
           />
           {/* 按钮 */}
-          <button
+          <Button
+            variant="unstyled"
+            size="unstyled"
             type="button"
             onClick={() => scroll("right")}
             className={cn(
-              "appearance-none border-0 bg-transparent p-0",
               "absolute right-2 top-1/2 -translate-y-1/2 z-10",
               "w-6 h-6",
               "rounded-[var(--radius-md)]",
-              "bg-[var(--bg-container)]",
-              "border border-[var(--border-neutral)]",
-              "p-[var(--padding-com-xs)]",
+              "bg-[var(--Container-bg-container)]",
+              "border border-[var(--Border-border-neutral)]",
+              "p-[var(--Padding-padding-com-xs)]",
               "flex items-center justify-center",
-              "hover:bg-[var(--bg-neutral-light)]",
+              "hover:bg-[var(--Container-bg-neutral-light)]",
               "transition-colors",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
             )}
             aria-label="Scroll right"
           >
             {rightScrollIcon || <ChevronRight className="w-4 h-4" />}
-          </button>
+          </Button>
         </>
       )}
     </div>

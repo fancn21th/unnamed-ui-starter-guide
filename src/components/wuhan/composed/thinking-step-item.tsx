@@ -339,5 +339,10 @@ const ThinkingStepItem = React.forwardRef<
 );
 ThinkingStepItem.displayName = "ThinkingStepItem";
 
-export type { ThinkingStepItemLabels, ThinkingStepItemProps, ThinkingStepItemContentItem, ThinkingStepItemContentItems };
+export type {
+  ThinkingStepItemLabels,
+  ThinkingStepItemProps,
+  ThinkingStepItemContentItem,
+  ThinkingStepItemContentItems,
+};
 export { ThinkingStepItem };

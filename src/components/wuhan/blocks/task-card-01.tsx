@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, Clock, Loader2, ChevronDown } from "lucide-react";
 import {
@@ -142,10 +143,10 @@ export const TaskCardContainerPrimitive = React.forwardRef<
         BOX_BORDER,
         "w-full",
         "rounded-[var(--radius-xl)]",
-        "bg-[var(--bg-brand-light)]",
+        "bg-[var(--Container-bg-brand-light)]",
         "border border-transparent",
-        "p-[var(--padding-com-md)]",
-        "gap-[var(--gap-lg)]",
+        "p-[var(--Padding-padding-com-md)]",
+        "gap-[var(--Gap-gap-lg)]",
         className,
       )}
       {...props}
@@ -174,22 +175,22 @@ export const TaskCardCollapsedHeaderPrimitive = React.forwardRef<
         "w-full",
         "flex items-center",
         "justify-between",
-        "gap-[var(--gap-sm)]",
+        "gap-[var(--Gap-gap-sm)]",
         className,
       )}
       {...props}
     >
       {/* 左侧：图标 + 步骤文本 */}
-      <div className="flex items-center gap-[var(--gap-sm)]">
+      <div className="flex items-center gap-[var(--Gap-gap-sm)]">
         {icon && <div className="flex items-center justify-center">{icon}</div>}
         {stepText && (
           <span
             className={cn(
-              "font-[var(--font-family-cn)]",
+              "font-[var(--font-family-CN)]",
               "font-[var(--font-weight-400)]",
               "font-size-2",
               "leading-[var(--line-height-2)]",
-              "text-[var(--text-primary)]",
+              "text-[var(--Text-text-primary)]",
             )}
           >
             {stepText}
@@ -198,14 +199,14 @@ export const TaskCardCollapsedHeaderPrimitive = React.forwardRef<
       </div>
 
       {/* 右侧：进度文本 */}
-      <div className="flex items-center gap-[var(--gap-sm)]">
+      <div className="flex items-center gap-[var(--Gap-gap-sm)]">
         <span
           className={cn(
-            "font-[var(--font-family-cn)]",
+            "font-[var(--font-family-CN)]",
             "font-[var(--font-weight-400)]",
             "font-size-2",
             "leading-[var(--line-height-2)]",
-            "text-[var(--text-tertiary)]",
+            "text-[var(--Text-text-tertiary)]",
           )}
         >
           {completed} / {total}
@@ -231,12 +232,12 @@ export const TaskCardTitlePrimitive = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "font-[var(--font-family-cn)]",
+        "font-[var(--font-family-CN)]",
         "font-[var(--font-weight-600)]",
         "font-semibold",
         "font-size-3",
         "leading-[var(--line-height-3)]",
-        "text-[var(--text-title)]",
+        "text-[var(--Text-text-title)]",
         className,
       )}
       {...props}
@@ -264,7 +265,7 @@ export const TaskCardStepListPrimitive = React.forwardRef<
         BOX_BORDER,
         "w-full",
         "flex flex-col",
-        "gap-[var(--gap-md)]",
+        "gap-[var(--Gap-gap-md)]",
         className,
       )}
       {...props}
@@ -296,9 +297,9 @@ export const TaskCardStepItemPrimitive = React.forwardRef<
 
   // 状态颜色
   const colorMap: Record<TaskCardSemanticStatus, string> = {
-    pending: "text-[var(--text-tertiary)]",
-    running: "text-[var(--text-brand)]",
-    completed: "text-[var(--text-success)]",
+    pending: "text-[var(--Text-text-tertiary)]",
+    running: "text-[var(--Text-text-brand)]",
+    completed: "text-[var(--Text-text-success)]",
   };
 
   return (
@@ -308,7 +309,7 @@ export const TaskCardStepItemPrimitive = React.forwardRef<
         BOX_BORDER,
         "w-full",
         "flex items-center",
-        "gap-[var(--gap-md)]",
+        "gap-[var(--Gap-gap-md)]",
         className,
       )}
       data-status={status}
@@ -328,11 +329,11 @@ export const TaskCardStepItemPrimitive = React.forwardRef<
       {/* 文本 */}
       <span
         className={cn(
-          "font-[var(--font-family-cn)]",
+          "font-[var(--font-family-CN)]",
           "font-[var(--font-weight-400)]",
           "font-size-2",
           "leading-[var(--line-height-2)]",
-          "text-[var(--text-primary)]",
+          "text-[var(--Text-text-primary)]",
         )}
       >
         {children}
@@ -358,7 +359,7 @@ export const TaskCardCollapseArrowPrimitive = React.forwardRef<
       className={cn(
         "flex items-center justify-center",
         "size-4",
-        "text-[var(--text-secondary)]",
+        "text-[var(--Text-text-secondary)]",
         "transition-all duration-200",
         open ? "rotate-180" : "rotate-0",
         className,
@@ -472,34 +473,32 @@ export const TaskCardPrimitive = React.forwardRef<
             BOX_BORDER,
             "w-full",
             "rounded-[var(--radius-xl)]",
-            "bg-[var(--bg-brand-light)]",
+            "bg-[var(--Container-bg-brand-light)]",
             "border border-transparent",
-            "py-[var(--padding-com-md)]",
-            "px-[var(--padding-com-xl)]",
+            "py-[var(--Padding-padding-com-md)]",
+            "px-[var(--Padding-padding-com-xl)]",
             "flex flex-col",
-            "gap-[var(--gap-lg)]",
+            "gap-[var(--Gap-gap-lg)]",
             className,
           )}
           {...props}
         >
           {/* 头部：收起状态显示，展开时作为 Trigger */}
           <CollapsibleTrigger asChild>
-            <button
+            <Button
+              variant="unstyled"
+              size="unstyled"
               type="button"
               className={cn(
-                "appearance-none",
-                "border-0",
-                "bg-transparent",
-                "p-0",
                 "w-full",
                 "flex items-center",
                 "justify-between",
-                "gap-[var(--gap-sm)]",
+                "gap-[var(--Gap-gap-sm)]",
                 "cursor-pointer",
               )}
             >
               {/* 左侧：图标 + 步骤文本 */}
-              <div className="flex items-center gap-[var(--gap-sm)]">
+              <div className="flex items-center gap-[var(--Gap-gap-sm)]">
                 {isOpen && heading ? (
                   // 展开状态显示 heading
                   <TaskCardTitlePrimitive>{heading}</TaskCardTitlePrimitive>
@@ -514,11 +513,11 @@ export const TaskCardPrimitive = React.forwardRef<
                     {stepText && (
                       <span
                         className={cn(
-                          "font-[var(--font-family-cn)]",
+                          "font-[var(--font-family-CN)]",
                           "font-[var(--font-weight-400)]",
                           "font-size-2",
                           "leading-[var(--line-height-2)]",
-                          "text-[var(--text-primary)]",
+                          "text-[var(--Text-text-primary)]",
                         )}
                       >
                         {stepText}
@@ -529,15 +528,15 @@ export const TaskCardPrimitive = React.forwardRef<
               </div>
 
               {/* 右侧：进度 + 箭头 */}
-              <div className="flex items-center gap-[var(--gap-sm)]">
+              <div className="flex items-center gap-[var(--Gap-gap-sm)]">
                 {
                   <span
                     className={cn(
-                      "font-[var(--font-family-cn)]",
+                      "font-[var(--font-family-CN)]",
                       "font-[var(--font-weight-400)]",
                       "font-size-2",
                       "leading-[var(--line-height-2)]",
-                      "text-[var(--text-tertiary)]",
+                      "text-[var(--Text-text-tertiary)]",
                     )}
                   >
                     {currentStep} / {total}
@@ -545,7 +544,7 @@ export const TaskCardPrimitive = React.forwardRef<
                 }
                 <TaskCardCollapseArrowPrimitive open={isOpen} />
               </div>
-            </button>
+            </Button>
           </CollapsibleTrigger>
 
           {/* 展开内容 */}

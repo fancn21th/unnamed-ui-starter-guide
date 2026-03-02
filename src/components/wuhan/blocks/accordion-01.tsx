@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as RadixAccordion from "@radix-ui/react-accordion";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 // ==================== 类型定义 ====================
@@ -11,8 +12,9 @@ import { cn } from "@/lib/utils";
  * Accordion Item 原语属性
  * @public
  */
-interface AccordionItemPrimitiveProps
-  extends React.ComponentPropsWithoutRef<typeof RadixAccordion.Item> {
+interface AccordionItemPrimitiveProps extends React.ComponentPropsWithoutRef<
+  typeof RadixAccordion.Item
+> {
   value: string;
 }
 
@@ -20,8 +22,9 @@ interface AccordionItemPrimitiveProps
  * Accordion Trigger 原语属性
  * @public
  */
-interface AccordionTriggerPrimitiveProps
-  extends React.ComponentPropsWithoutRef<typeof RadixAccordion.Trigger> {
+interface AccordionTriggerPrimitiveProps extends React.ComponentPropsWithoutRef<
+  typeof RadixAccordion.Trigger
+> {
   children?: React.ReactNode;
 }
 
@@ -29,8 +32,9 @@ interface AccordionTriggerPrimitiveProps
  * Accordion Content 原语属性
  * @public
  */
-interface AccordionContentPrimitiveProps
-  extends React.ComponentPropsWithoutRef<typeof RadixAccordion.Content> {
+interface AccordionContentPrimitiveProps extends React.ComponentPropsWithoutRef<
+  typeof RadixAccordion.Content
+> {
   children?: React.ReactNode;
 }
 
@@ -38,11 +42,10 @@ interface AccordionContentPrimitiveProps
  * Accordion Single Root 原语属性
  * @public
  */
-interface AccordionSingleRootPrimitiveProps
-  extends Omit<
-    React.ComponentPropsWithoutRef<typeof RadixAccordion.Root>,
-    "type"
-  > {
+interface AccordionSingleRootPrimitiveProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof RadixAccordion.Root>,
+  "type"
+> {
   type: "single";
   collapsible?: boolean;
   defaultValue?: string;
@@ -57,11 +60,10 @@ interface AccordionSingleRootPrimitiveProps
  * Accordion Multiple Root 原语属性
  * @public
  */
-interface AccordionMultipleRootPrimitiveProps
-  extends Omit<
-    React.ComponentPropsWithoutRef<typeof RadixAccordion.Root>,
-    "type"
-  > {
+interface AccordionMultipleRootPrimitiveProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof RadixAccordion.Root>,
+  "type"
+> {
   type: "multiple";
   defaultValue?: string[];
   value?: string[];
@@ -114,30 +116,36 @@ export const AccordionTriggerPrimitive = React.forwardRef<
       className={cn(
         "flex mx-0 mt-0 not-prose",
         "data-[state=open]:mb-2 data-[state=closed]:mb-0",
-        className
+        className,
       )}
     >
-      <RadixAccordion.Trigger
-        ref={ref}
-        data-accordion-trigger=""
-        className={cn(
-          "font-[var(--font-family-cn)]",
-          "font-[var(--font-weight-400)]",
-          "leading-[var(--line-height-2)]",
-          "text-[var(--text-secondary)]",
-          "font-size-2",
-          "group flex flex-1 items-center justify-between gap-2",
-          "text-left transition-all outline-none",
-          "hover:bg-[var(--bg-hover)]",
-          "focus-visible:ring-2 focus-visible:ring-[var(--ring)]",
-          "[&[data-state='open']>svg.chevron-down]:hidden",
-          "[&[data-state='closed']>svg.chevron-up]:hidden"
-        )}
-        {...props}
-      >
-        {children}
-        <ChevronDown className="chevron-down h-4 w-4 shrink-0 text-[var(--text-tertiary)] transition-transform duration-200" />
-        <ChevronUp className="chevron-up h-4 w-4 shrink-0 text-[var(--text-tertiary)] transition-transform duration-200" />
+      <RadixAccordion.Trigger asChild ref={ref} data-accordion-trigger="">
+        <Button
+          variant="unstyled"
+          size="unstyled"
+          className={cn(
+            "font-[var(--font-family-CN)]",
+            "font-[var(--font-weight-400)]",
+            "leading-[var(--line-height-2)]",
+            "text-[var(--Text-text-primary)]",
+            "font-size-2",
+            "group flex flex-1 items-center justify-between gap-2",
+            "text-left transition-all outline-none",
+            "focus-visible:ring-2 focus-visible:ring-[var(--ring)]",
+          )}
+          {...props}
+        >
+          {children}
+          <div
+            className={cn(
+              "flex items-center justify-center",
+              "size-6 rounded-[var(--radius-md)] hover:bg-[var(--Container-bg-neutral-light)] shrink-0 text-[var(--Text-text-tertiary)] transition-transform duration-200",
+            )}
+          >
+            <ChevronDown className="size-4 rounded-[var(--radius-md)] hover:bg-[var(--Container-bg-neutral-light)] shrink-0 text-[var(--Text-text-tertiary)] transition-transform duration-200 group-data-[state=open]:hidden" />
+            <ChevronUp className="size-4 rounded-[var(--radius-md)] hover:bg-[var(--Container-bg-neutral-light)] shrink-0 text-[var(--Text-text-tertiary)] transition-transform duration-200 group-data-[state=closed]:hidden" />
+          </div>
+        </Button>
       </RadixAccordion.Trigger>
     </RadixAccordion.Header>
   );
@@ -167,27 +175,25 @@ AccordionContentPrimitive.displayName = "AccordionContentPrimitive";
 export const AccordionSingleRootPrimitive = React.forwardRef<
   HTMLDivElement,
   AccordionSingleRootPrimitiveProps
->(({
-  className,
-  children,
-  gap,
-  collapsible = true,
-  type: _type,
-  ...props
-}, ref) => {
-  return (
-    <RadixAccordion.Root
-      ref={ref}
-      data-accordion=""
-      className={cn("flex flex-col", gap, className)}
-      type="single"
-      collapsible={collapsible}
-      {...props}
-    >
-      {children}
-    </RadixAccordion.Root>
-  );
-});
+>(
+  (
+    { className, children, gap, collapsible = true, type: _type, ...props },
+    ref,
+  ) => {
+    return (
+      <RadixAccordion.Root
+        ref={ref}
+        data-accordion=""
+        className={cn("flex flex-col", gap, className)}
+        type="single"
+        collapsible={collapsible}
+        {...props}
+      >
+        {children}
+      </RadixAccordion.Root>
+    );
+  },
+);
 AccordionSingleRootPrimitive.displayName = "AccordionSingleRootPrimitive";
 
 /**

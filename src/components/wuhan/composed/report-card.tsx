@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import * as Popover from "@radix-ui/react-popover";
 import {
@@ -115,72 +116,78 @@ const CardActionsMenu = ({
       className={cn(
         "min-w-[120px]",
         "rounded-[var(--radius-xl)]",
-        "border border-[var(--border-neutral)]",
-        "bg-[var(--bg-container)]",
+        "border border-[var(--Border-border-neutral)]",
+        "bg-[var(--Container-bg-container)]",
         "shadow-[var(--shadow-basic)]",
-        "p-[var(--padding-com-xs)]",
+        "p-[var(--Padding-padding-com-xs)]",
       )}
     >
       <div className="flex flex-col">
         {onEdit && (
-          <button
+          <Button
+            variant="unstyled"
+            size="unstyled"
             type="button"
             onClick={onEdit}
             className={cn(
-              "flex items-center gap-[var(--gap-md)]",
-              "py-[var(--gap-xs)] px-[var(--padding-com-md)]",
+              "flex items-center gap-[var(--Gap-gap-md)]",
+              "py-[var(--Gap-gap-xs)] px-[var(--Padding-padding-com-md)]",
               "rounded-[var(--radius-lg)]",
               "cursor-pointer",
               "outline-none",
-              "text-[var(--text-primary)]",
-              "hover:bg-[var(--bg-neutral-light)]",
+              "text-[var(--Text-text-primary)]",
+              "hover:bg-[var(--Container-bg-neutral-light)]",
             )}
           >
-            <Pencil className="size-4 text-[var(--text-secondary)]" />
+            <Pencil className="size-4 text-[var(--Text-text-secondary)]" />
             <span className="font-size-2 leading-[var(--line-height-2)]">
               编辑
             </span>
-          </button>
+          </Button>
         )}
         {onDuplicate && (
-          <button
+          <Button
+            variant="unstyled"
+            size="unstyled"
             type="button"
             onClick={onDuplicate}
             className={cn(
-              "flex items-center gap-[var(--gap-md)]",
-              "py-[var(--gap-xs)] px-[var(--padding-com-md)]",
+              "flex items-center gap-[var(--Gap-gap-md)]",
+              "py-[var(--Gap-gap-xs)] px-[var(--Padding-padding-com-md)]",
               "rounded-[var(--radius-lg)]",
               "cursor-pointer",
               "outline-none",
-              "text-[var(--text-primary)]",
-              "hover:bg-[var(--bg-neutral-light)]",
+              "text-[var(--Text-text-primary)]",
+              "hover:bg-[var(--Container-bg-neutral-light)]",
             )}
           >
-            <Copy className="size-4 text-[var(--text-secondary)]" />
+            <Copy className="size-4 text-[var(--Text-text-secondary)]" />
             <span className="font-size-2 leading-[var(--line-height-2)]">
               复制
             </span>
-          </button>
+          </Button>
         )}
         {onDelete && (
-          <button
+          <Button
+            variant="unstyled"
+            size="unstyled"
             type="button"
             onClick={onDelete}
             className={cn(
-              "flex items-center gap-[var(--gap-md)]",
-              "py-[var(--gap-xs)] px-[var(--padding-com-md)]",
+              "flex items-center gap-[var(--Gap-gap-md)]",
+              "py-[var(--Gap-gap-xs)] px-[var(--Padding-padding-com-md)]",
               "rounded-[var(--radius-lg)]",
               "cursor-pointer",
               "outline-none",
-              "text-[var(--text-error)]",
-              "hover:bg-[var(--bg-error-light)]",
+              "text-[var(--Text-text-error)]",
+              "hover:bg-[var(--Container-bg-error-light)]",
             )}
           >
-            <Trash2 className="size-4 text-[var(--text-error)]" />
+            <Trash2 className="size-4 text-[var(--Text-text-error)]" />
             <span className="font-size-2 leading-[var(--line-height-2)]">
               删除
             </span>
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -224,7 +231,6 @@ export const ReportCard = React.forwardRef<HTMLDivElement, ReportCardProps>(
       showAction = true,
       className,
     } = props;
-    const [isHovered, setIsHovered] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const closeTimer = React.useRef<number | null>(null);
 
@@ -267,16 +273,8 @@ export const ReportCard = React.forwardRef<HTMLDivElement, ReportCardProps>(
         ref={ref}
         selected={selected}
         disabled={disabled}
-        className={className}
+        className={cn("group/report-card", className)}
         style={{ width }}
-        onMouseEnter={() => {
-          setIsHovered(true);
-          clearCloseTimer();
-        }}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          scheduleClose();
-        }}
       >
         {/* 左侧：复选框 + 图标 + 标题 + 描述 */}
         <ReportCardHeaderPrimitive
@@ -294,48 +292,54 @@ export const ReportCard = React.forwardRef<HTMLDivElement, ReportCardProps>(
           // 用户自定义操作区域
           <div onClick={(e) => e.stopPropagation()}>{action}</div>
         ) : showDefaultAction ? (
-          // 默认操作按钮 (hover 时显示)
-          isHovered && (
-            <Popover.Root open={open} onOpenChange={setOpen}>
-              <Popover.Trigger asChild>
-                <span
-                  className={cn(
-                    "flex items-center justify-center",
-                    "w-6 h-6",
-                    "rounded-[var(--radius-md)]",
-                    "p-[var(--gap-xs)]",
-                    "cursor-pointer",
-                    "bg-[var(--bg-neutral-light-hover)]",
-                    // "hover:bg-[var(--bg-neutral-light-hover)]",
-                  )}
-                  aria-label="更多操作"
-                  onMouseEnter={() => {
-                    clearCloseTimer();
-                    setOpen(true);
-                  }}
-                  onMouseLeave={scheduleClose}
-                >
-                  <Ellipsis className="size-4 text-[var(--text-secondary)]" />
-                </span>
-              </Popover.Trigger>
-              <Popover.Portal>
-                <Popover.Content
-                  side="bottom"
-                  align="end"
-                  sideOffset={8}
-                  onMouseEnter={clearCloseTimer}
-                  onMouseLeave={scheduleClose}
-                  className={cn("z-50")}
-                >
-                  <CardActionsMenu
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    onDuplicate={onDuplicate}
-                  />
-                </Popover.Content>
-              </Popover.Portal>
-            </Popover.Root>
-          )
+          // 默认操作按钮（与 file-card 一致：默认隐藏，hover 卡片时显示）
+          <Popover.Root open={open} onOpenChange={setOpen}>
+            <Popover.Trigger asChild>
+              <span
+                className={cn(
+                  "flex items-center justify-center",
+                  "w-6 h-6",
+                  "rounded-[var(--radius-md)]",
+                  "p-[var(--Gap-gap-xs)]",
+                  "transition-all duration-200",
+                  "flex-shrink-0",
+                  // 默认隐藏，hover 卡片时显示（此时无底色）
+                  "opacity-0",
+                  "group-hover/report-card:opacity-100",
+                  // popover 展开时 icon 保持显示且保持底色
+                  open && "opacity-100",
+                  open && "bg-[var(--Container-bg-neutral-light-hover)]",
+                  // 仅 hover icon 时底色变化
+                  "hover:bg-[var(--Container-bg-neutral-light-hover)]",
+                  "cursor-pointer",
+                )}
+                aria-label="更多操作"
+                onMouseEnter={() => {
+                  clearCloseTimer();
+                  setOpen(true);
+                }}
+                onMouseLeave={scheduleClose}
+              >
+                <Ellipsis className="size-4 text-[var(--Text-text-secondary)]" />
+              </span>
+            </Popover.Trigger>
+            <Popover.Portal>
+              <Popover.Content
+                side="bottom"
+                align="end"
+                sideOffset={8}
+                onMouseEnter={clearCloseTimer}
+                onMouseLeave={scheduleClose}
+                className={cn("z-50")}
+              >
+                <CardActionsMenu
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  onDuplicate={onDuplicate}
+                />
+              </Popover.Content>
+            </Popover.Portal>
+          </Popover.Root>
         ) : null}
       </ReportCardContainerPrimitive>
     );
@@ -392,18 +396,20 @@ export const ReportCardList = React.forwardRef<
       {/* {title && (
         <div
           className={cn(
-            "font-[var(--font-family-cn)]",
+            "font-[var(--font-family-CN)]",
             "font-[var(--font-weight-600)]",
             "font-size-2",
             "leading-[var(--line-height-2)]",
-            "text-[var(--text-primary)]",
-            "mb-[var(--margin-com-md)]",
+            "text-[var(--Text-text-primary)]",
+            "mb-[var(--Margin-margin-com-md)]",
           )}
         >
           {title}
         </div>
       )} */}
-      <div className={cn("flex flex-col gap-[var(--gap-md)]", listClassName)}>
+      <div
+        className={cn("flex flex-col gap-[var(--Gap-gap-md)]", listClassName)}
+      >
         {cards.map((card) => (
           <ReportCard
             key={card.id}

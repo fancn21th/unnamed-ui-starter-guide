@@ -120,7 +120,7 @@ export interface ToggleButtonProps {
       optionId: string;
       disabled?: boolean;
       index: number;
-    }
+    },
   ) => React.ReactNode;
 }
 
@@ -158,16 +158,20 @@ export interface ToggleButtonProps {
  *   variant="compact"
  * />
  *
- * // 自定义渲染（如配合 Tooltip）
+ * // 简单 Tooltip（推荐用 option.tooltip）
  * <ToggleButton
- *   options={[{ id: "web-search", label: "联网搜索", icon: <Globe className="size-4" /> }]}
+ *   options={[
+ *     {
+ *       id: "web-search",
+ *       label: "联网搜索",
+ *       icon: <Globe className="size-4" />,
+ *       tooltip: "联网搜索",
+ *     },
+ *   ]}
  *   value={value}
  *   onChange={setValue}
- *   renderOption={(option) => (
- *     <Tooltip content={option.label}>
- *       <span className="inline-flex">{option.icon ?? option.label}</span>
- *     </Tooltip>
- *   )}
+ *   variant="compact"
+ *   className="p-2"
  * />
  * ```
  *
@@ -194,19 +198,29 @@ export const ToggleButton = React.forwardRef<HTMLDivElement, ToggleButtonProps>(
     ref,
   ) => {
     // 非受控模式
-    const [internalValue, setInternalValue] = React.useState<string | undefined>(
-      valueProp === undefined ? defaultValue : undefined,
-    );
+    const [internalValue, setInternalValue] = React.useState<
+      string | undefined
+    >(valueProp === undefined ? defaultValue : undefined);
     const [internalValues, setInternalValues] = React.useState<string[]>(
-      valuesProp === undefined ? defaultValues ?? [] : [],
+      valuesProp === undefined ? (defaultValues ?? []) : [],
     );
 
     const isControlled = valueProp !== undefined || valuesProp !== undefined;
     const value = isControlled ? valueProp : internalValue;
-    const values = isControlled ? (valuesProp ?? []) : internalValues;
+    const values = React.useMemo(
+      () => (isControlled ? (valuesProp ?? []) : internalValues),
+      [isControlled, valuesProp, internalValues],
+    );
 
-    // 开发环境校验
-    if (import.meta.env.DEV) {
+    // 开发环境校验（兼容 Vite import.meta.env 与 Next.js process.env）
+    const isDev =
+      (typeof import.meta !== "undefined" &&
+        (import.meta as { env?: { DEV?: boolean } }).env?.DEV) ||
+      (typeof (globalThis as { process?: { env?: { NODE_ENV?: string } } })
+        .process !== "undefined" &&
+        (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process
+          ?.env?.NODE_ENV === "development");
+    if (isDev) {
       if (valueProp !== undefined && valuesProp !== undefined) {
         console.warn(
           "[ToggleButton] 不能同时使用 value 和 values，请根据 multiple 选择其一",
@@ -274,7 +288,7 @@ export const ToggleButton = React.forwardRef<HTMLDivElement, ToggleButtonProps>(
             disabled: option.disabled,
             index,
           })
-        : option.icon ?? option.label;
+        : (option.icon ?? option.label);
 
       const button = (
         <ToggleButtonPrimitive

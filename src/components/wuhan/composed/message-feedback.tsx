@@ -129,7 +129,11 @@ export function MessageFeedbackActions({
   }, [disliked]);
 
   const handleFeedbackSubmit = useCallback(
-    (payload: { selectedId: string; selectedIds: string[]; inputValue: string }) => {
+    (payload: {
+      selectedId: string;
+      selectedIds: string[];
+      inputValue: string;
+    }) => {
       setShowFeedbackForm(false);
       onFeedbackSubmit?.(payload);
     },
@@ -144,8 +148,7 @@ export function MessageFeedbackActions({
     feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, []);
 
-  const buttonsAlignClass =
-    align === "right" ? "justify-end" : "justify-start";
+  const buttonsAlignClass = align === "right" ? "justify-end" : "justify-start";
 
   return (
     <div className="w-full flex flex-col gap-2">
@@ -158,11 +161,7 @@ export function MessageFeedbackActions({
           onClick={handleCopy}
           disabled={!textToCopy}
         >
-          {copied ? (
-            <Check className="size-4" />
-          ) : (
-            <Copy className="size-4" />
-          )}
+          {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
         </IconButton>
         {role === "ai" && (
           <>
@@ -176,7 +175,7 @@ export function MessageFeedbackActions({
               <ThumbsUp
                 className={cn(
                   "size-4",
-                  liked && "fill-current text-[var(--text-brand)]",
+                  liked && "fill-current text-[var(--Text-text-brand)]",
                 )}
               />
             </IconButton>
@@ -190,7 +189,7 @@ export function MessageFeedbackActions({
               <ThumbsDown
                 className={cn(
                   "size-4",
-                  disliked && "fill-current text-[var(--text-brand)]",
+                  disliked && "fill-current text-[var(--Text-text-brand)]",
                 )}
               />
             </IconButton>
