@@ -704,8 +704,7 @@ export function MessageList() {
   })
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex-1 overflow-y-auto">
+    <div className="flex flex-col h-full overflow-auto [scrollbar-gutter:stable]">
         <MessageListComponent
           className="max-w-[800px] w-auto mx-auto"
           messages={renderedMessages}
@@ -713,7 +712,6 @@ export function MessageList() {
           onMessageClick={(msg) => console.log('消息点击:', msg.id)}
           renderContent={(content) => content}
         />
-      </div>
     </div>
   )
 }
