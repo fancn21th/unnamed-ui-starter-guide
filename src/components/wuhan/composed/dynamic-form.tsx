@@ -12,7 +12,7 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/wuhan/composed/block-button";
 import {
   DynamicFormLayoutPrimitive,
   DynamicFormHeaderPrimitive,
@@ -520,11 +520,12 @@ export const DynamicForm = React.forwardRef<DynamicFormRef, DynamicFormProps>(
               <Button
                 type="button"
                 variant="outline"
+                color="secondary"
                 onClick={() => reset(mergedDefaultValues)}
               >
                 {resetText}
               </Button>
-              <Button type="submit">{submitText}</Button>
+              <Button type="submit" >{submitText}</Button>
             </DynamicFormFooterPrimitive>
           )}
         </form>
