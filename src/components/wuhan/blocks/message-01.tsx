@@ -202,8 +202,10 @@ const MessageAIPrimitive = React.forwardRef<
         <div
           className={cn(
             "w-full",
-            "pt-[var(--Gap-gap-md)]",
-            "pb-[var(--Gap-gap-md)]",
+            "pt-[var(--gap-md)]",
+            // "pr-[var(--gap-lg)]",
+            "pb-[var(--gap-md)]",
+            // "pl-[var(--gap-lg)]",
             "rounded-[var(--radius-xl)]",
             "font-[var(--font-family-CN)]",
             "font-normal",
