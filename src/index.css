@@ -471,6 +471,25 @@ html,
   --color-error : var(--error);
 }
 
+/* 滚动条样式 - 仅显示滑块，使用设计 token */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neutral-200) transparent;
+}
+*::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-button,
+*::-webkit-scrollbar-corner {
+  display: none;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--neutral-200);
+  border-radius: var(--radius-circle);
+}
+
 .dark {
   /* 背景和前景 - 基于 tokens Dark.Neutral */
   --background: var(--neutral-10); /* #141414 */
