@@ -309,18 +309,15 @@ export const TripleSplitPane = React.forwardRef<
         type="button"
         onClick={leftExpandButtonDisabled ? undefined : toggleLeftPanel}
         onMouseEnter={() =>
-          !leftExpandButtonDisabled &&
           !leftPopoverAlwaysOpen &&
           leftPopoverEnabled &&
           setIsLeftPopoverOpen(true)
         }
         onMouseLeave={() =>
-          !leftExpandButtonDisabled &&
           !leftPopoverAlwaysOpen &&
           leftPopoverEnabled &&
           setIsLeftPopoverOpen(false)
         }
-        disabled={leftExpandButtonDisabled}
         className="mr-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
       >
         {leftCollapsibleIcon || <PanelLeft className="h-4 w-4" />}
@@ -392,7 +389,7 @@ export const TripleSplitPane = React.forwardRef<
           width="100%"
           panelTitle={
             <div className="flex items-center">
-              {isLeftCollapsed && renderLeftExpandButton()}
+              {(isLeftCollapsed || parseFloat(constrainedLeftWidth) === 0) ? renderLeftExpandButton() : null}
               {centerTitle}
             </div>
           }

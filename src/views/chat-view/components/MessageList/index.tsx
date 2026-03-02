@@ -707,7 +707,7 @@ export function MessageList() {
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-1 overflow-y-auto">
         <MessageListComponent
-          className="w-[800px] mx-auto"
+          className="max-w-[800px] w-auto mx-auto"
           messages={renderedMessages}
           showDefaultFeedback
           onMessageClick={(msg) => console.log('消息点击:', msg.id)}
