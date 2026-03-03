@@ -75,7 +75,6 @@ function App() {
           minWidth: isInMidRange ? '0px' : '240px',
           children: <DataSourcePanel />,
           classNames: {
-            body: 'px-2 py-4',
           },
         }}
         leftPopover={{
