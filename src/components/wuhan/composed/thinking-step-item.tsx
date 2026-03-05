@@ -239,7 +239,6 @@ const ThinkingStepItem = React.forwardRef<
           <ThinkingStepItemTitlePrimitive>
             {title}
           </ThinkingStepItemTitlePrimitive>
-          <ThinkingStepItemCollapseArrowPrimitive className="rotate-180" />
         </ThinkingStepItemHeaderPrimitive>
         {hasContent && (
           <ThinkingStepItemContentPrimitive
@@ -261,7 +260,9 @@ const ThinkingStepItem = React.forwardRef<
                       </ThinkingStepItemRegularContentPrimitive>
                     );
                   }
-                  if (resolvedStatus === "running") {
+                  // 只有在没有其他内容（toolCall、files、custom）且状态为 running 时才显示"思考中..."
+                  const hasOtherContent = item.toolCall || (item.files && item.files.length > 0) || item.render;
+                  if (resolvedStatus === "running" && !hasOtherContent) {
                     return (
                       <ThinkingStepItemRegularContentPrimitive className="animate-pulse">
                         {resolvedLabels.thinking}

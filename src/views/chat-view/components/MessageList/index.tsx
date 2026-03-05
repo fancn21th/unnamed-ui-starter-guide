@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import {
   MessageList as MessageListComponent,
   type MessageItem,
@@ -10,133 +10,22 @@ import {
   ThinkingStep,
   type ThinkingStepContentBlock,
 } from '@/components/wuhan/composed/thinking-process'
-import {
-  ThinkingStepItem,
-  type ThinkingStepItemProps,
-} from '@/components/wuhan/composed/thinking-step-item'
+import { TaskList } from '@/components/wuhan/composed/task-list'
 import {
   DynamicForm,
   type FormSchema,
 } from '@/components/wuhan/composed/dynamic-form'
-import { TaskList, type TodoItem } from '@/components/wuhan/composed/task-list'
 import { ConfirmPanel } from '@/components/wuhan/composed/confirm-panel'
-import {
-  ReportCardList,
-  type ReportCardItem,
-} from '@/components/wuhan/composed/report-card'
-import {
-  DocumentCard,
-  type DocumentCardProps,
-} from '@/components/wuhan/composed/document-card'
-import { BookOpen, FileText, Search } from 'lucide-react'
+import { ReportCard } from '@/components/wuhan/composed/report-card'
+import { DocumentCard } from '@/components/wuhan/composed/document-card'
 import Markdown from '@/components/wuhan/composed/markdown'
 import { useAppState } from '@/contexts/app-context.lib.ts'
-
-// ============================================================================
-// 消息内容类型
-// ============================================================================
-
-type MessageContent =
-  | { type: 'text'; text: string }
-  | {
-      type: 'thinking'
-      blocks: ThinkingStepContentBlock[]
-      title: string
-      status?:
-        | 'pending'
-        | 'thinking'
-        | 'running'
-        | 'completed'
-        | 'success'
-        | 'error'
-      tasklist?: {
-        dataSource: TodoItem[]
-        title?: string
-        status?: 'pending' | 'confirmed'
-        editable?: boolean
-      }
-    }
-  | { type: 'form'; schema: FormSchema }
-  | { type: 'steps'; steps: Array<ThinkingStepItemProps & { key: React.Key }> }
-  | {
-      type: 'tasklist'
-      dataSource: TodoItem[]
-      title?: string
-      status?: 'pending' | 'confirmed'
-      editable?: boolean
-    }
-  | { type: 'document-card'; card: DocumentCardProps }
-
-interface MessageData {
-  id: string
-  role: 'user' | 'ai'
-  content: string | MessageContent | Array<string | MessageContent>
-  timestamp: number
-  avatar?: {
-    src: string
-    name: string
-    time?: string
-  }
-}
-
-interface ConfirmPanelData {
-  text: string
-  status?: 'pending' | 'confirmed'
-  cards: ReportCardItem[]
-}
-
-const ConfirmReportPanel = ({ data }: { data: ConfirmPanelData }) => {
-  const [state, setState] = useState(() => ({
-    text: data.text,
-    status: data.status ?? 'pending',
-    cards: data.cards,
-  }))
-  const isConfirmed = state.status === 'confirmed'
-  const displayCards = isConfirmed
-    ? state.cards.map((card) => ({ ...card, selected: false }))
-    : state.cards
-
-  const handleSelectChange = (selected: boolean, id: string) => {
-    if (isConfirmed) return
-    setState((prev) => ({
-      ...prev,
-      cards: prev.cards.map((card) => ({
-        ...card,
-        selected: card.id === id ? selected : false,
-      })),
-    }))
-  }
-
-  const handleConfirm = () => {
-    const selectedCard = state.cards.find((card) => card.selected)
-    if (!selectedCard) return
-
-    setState((prev) => ({
-      ...prev,
-      status: 'confirmed',
-      cards: prev.cards.filter((card) => card.id === selectedCard.id),
-    }))
-  }
-
-  return (
-    <ConfirmPanel
-      title="选择模板"
-      status={state.status}
-      confirmButtonText="确认"
-      onConfirm={handleConfirm}
-      contentClassName="flex flex-col gap-[var(--gap-lg)]"
-    >
-      <p className="text-sm text-(--text-secondary)">{state.text}</p>
-      <ReportCardList
-        cards={displayCards}
-        onSelectChange={handleSelectChange}
-        showCardAction={false}
-        showCheckbox={!isConfirmed}
-        listClassName="flex-row flex-wrap"
-      />
-    </ConfirmPanel>
-  )
-}
+import {
+  useChatContext,
+  type MessageContent,
+  type MessageData,
+} from '@/lib/chat'
+import type { DynamicFormItemData, ConfirmPanelItemData } from '@/lib/chat/agui-types'
 
 // ============================================================================
 // 从消息内容中提取文本（用于复制）
@@ -154,246 +43,6 @@ function extractTextFromContent(
 }
 
 // ============================================================================
-// 模拟真实消息数据
-// ============================================================================
-
-const mockMessages: MessageData[] = [
-  {
-    id: '1',
-    role: 'user',
-    content:
-      '数据源我都上传了，缺的东西你去企业知识库“IC - 265”项目里面去找，下面直接帮我生成CSR报告',
-    timestamp: Date.now() - 300000,
-  },
-  {
-    id: '3',
-    role: 'ai',
-    content: [
-      {
-        type: 'thinking',
-        title: '思考完成',
-        status: 'completed',
-        tasklist: {
-          title: '待办清单',
-          dataSource: [
-            { id: '1', content: '确定模板', order: 1 },
-            { id: '2', content: '明确数据来源', order: 2 },
-            { id: '3', content: '解析模板', order: 3 },
-            { id: '4', content: '多源材料解析', order: 4 },
-            { id: '5', content: '任务编排', order: 5 },
-            { id: '6', content: '逐章节推理质量审查', order: 6 },
-          ],
-          status: 'pending',
-          editable: true,
-        },
-        blocks: [
-          {
-            type: 'text',
-            key: 'intro',
-            content:
-              '我已接收到了用户的材料文件，即将梳理思路 ，为用户输出以“01--3.Chinese_CSR_v2.0_09Dec11 2 -SAMPLE-empty templet”为模板的临床试验报告。为了给用户最严谨的反馈，我需要按照以下步骤执行任务：',
-          },
-          {
-            type: 'node',
-            key: 'tasklist',
-            node: null, // 将在渲染时动态设置
-          },
-          {
-            type: 'subSteps',
-            key: 'steps',
-            steps: [
-              {
-                key: 'step-1',
-                status: 'success',
-                title:
-                  '确定模板：查找符合监管要求的模板文件，并明确最终选用的模板文件',
-                items: [
-                  {
-                    content:
-                      '查找符合监管要求的模板文件，我将调用数据来源查询工具',
-                    toolCall: {
-                      icon: <Search className="size-4" />,
-                      title: '数据来源查询',
-                      content: '从数据来源中查询关于 IC - 265 的报告模板',
-                    },
-                    files: [{ icon: '📄', name: 'AI发展趋势.pdf' }],
-                    // 自定义组件：表单预览（渲染在 files 之后）
-                    render: (schema: unknown) => (
-                      <DynamicForm schema={schema as FormSchema} />
-                    ),
-                    data: {
-                      title: 'CSR 报告',
-                      fields: [
-                        { name: 'title', label: '报告标题', type: 'input' },
-                        { name: 'version', label: '版本号', type: 'input' },
-                        {
-                          name: 'status',
-                          label: '状态',
-                          type: 'select',
-                          options: [
-                            { value: 'draft', label: '草稿' },
-                            { value: 'final', label: '终版' },
-                          ],
-                        },
-                      ],
-                    } as FormSchema,
-                  },
-                  {
-                    content:
-                      '查找符合监管要求的模板文件，我将调用企业知识查询工具',
-                    toolCall: {
-                      icon: <Search className="size-4" />,
-                      title: '企业知识查询',
-                      content: '从企业知识库中查询关于“ IC - 265”的报告模板',
-                    },
-                    files: [{ icon: '📄', name: ' IC - 265.pdf' }],
-                  },
-                  {
-                    content: '姓名：张三 | 学历：本科 | 工作年限：5年',
-                    toolCall: {
-                      icon: <BookOpen className="size-4" />,
-                      title: '调取知识',
-                      content: '正在调取知识库资料',
-                    },
-                    files: [
-                      { icon: '📄', name: 'AI发展趋势.pdf' },
-                      { icon: '📄', name: 'AI发展历史.doc' },
-                    ],
-                    render: (data: unknown) => (
-                      <ConfirmReportPanel data={data as ConfirmPanelData} />
-                    ),
-                    data: {
-                      text: '请从以下报告中选择一份作为最终结果，确认后将仅保留所选报告。',
-                      status: 'pending',
-                      cards: [
-                        {
-                          id: 'report-1',
-                          title: '临床试验 CSR 报告',
-                          description: '更新时间：02-12 10:35',
-                          selected: true,
-                        },
-                        {
-                          id: 'report-2',
-                          title: 'IC-265 数据解析报告',
-                          description: '更新时间：02-12 10:28',
-                        },
-                      ],
-                    },
-                  },
-                ],
-              },
-              {
-                key: 'step-2',
-                status: 'success',
-                title: '明确数据来源',
-                items: [
-                  {
-                    content:
-                      '查找符合监管要求的模板文件，我将调用企业知识查询工具',
-                    toolCall: {
-                      icon: <Search className="size-4" />,
-                      title: '企业知识查询',
-                      content: '从企业知识库中查询关于“ IC - 265”的报告模板',
-                    },
-                    render: (schema: unknown) => (
-                      <DynamicForm schema={schema as FormSchema} />
-                    ),
-                    data: {
-                      title: '补充信息',
-                      fields: [
-                        {
-                          name: 'title',
-                          label: '你关注的时间范围是多久？',
-                          type: 'radio',
-                          options: [
-                            { value: '1-2', label: '短期 1-2 年' },
-                            { value: '3-5', label: '中期 3-5 年' },
-                            { value: '5-10', label: '长期 5-10 年' },
-                          ],
-                        },
-                        {
-                          name: 'title',
-                          label: '你更关注哪些 AI 技术方向？',
-                          type: 'radio',
-                          options: [
-                            { value: 'llm', label: '大模型' },
-                            { value: 'multimodal', label: '多模态' },
-                            { value: 'genai', label: '生成式 AI' },
-                          ],
-                        },
-                      ],
-                    } as FormSchema,
-                  },
-                ],
-              },
-              {
-                key: 'step-3',
-                status: 'success',
-                title: '解析模板：读取模板文件并明确章节映射规则',
-                items: [
-                  {
-                    content: '解析模板，我将调用文档解析工具',
-                    toolCall: {
-                      icon: <FileText className="size-4" />,
-                      title: '文档解析',
-                      content:
-                        '现在我要开始解析模板，系统开始读取用户选择的“01--3.Chinese_CSR_v2.0_09Dec11 2 -SAMPLE-empty templet”',
-                    },
-                  },
-                  {
-                    content: '解析模板，我将调用章节识别工具',
-                    toolCall: {
-                      icon: <Search className="size-4" />,
-                      title: '章节识别',
-                      content:
-                        '现在开始抽取模板文件的所有章节，并解析章节层级，确保获取到的目录结构正确，并建立章节树',
-                    },
-                  },
-                  {
-                    content: '解析模板，我将调用章节处理策略工具',
-                    toolCall: {
-                      icon: <Search className="size-4" />,
-                      title: '章节处理策略',
-                      content:
-                        '将章节映射至对应的 ICH E3 / 等监管指南条款，明确该章节的合规定位与必填属性。',
-                    },
-                  },
-                  {
-                    content: '解析模板，我将调用语义匹配工具',
-                    toolCall: {
-                      icon: <Search className="size-4" />,
-                      title: '语义匹配',
-                      content:
-                        '判断是否存在与当前章节高度相似可直接复用的段落，并给出相似度评分',
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        type: 'text',
-        text: '您可以点击报告卡片查阅或修改已生成的 IC-265 CSR临床试验报告，已自动化为您保存。',
-      },
-      {
-        type: 'document-card',
-        card: {
-          title: 'IC-265 CSR临床试验报告',
-          updateTime: '10:45',
-        },
-      },
-      {
-        type: 'text',
-        text: '报告模板中的“10.2.4 治疗期”章节缺少必要的统计分析文件信息，无法一次性生成完成，建议邀请“统计专家”进入工作空间，补充必要性材料后继续。',
-      },
-    ],
-    timestamp: Date.now() - 250000,
-  },
-]
-
-// ============================================================================
 // 主组件
 // ============================================================================
 
@@ -404,7 +53,7 @@ interface DemoMessageItem extends MessageItem {
 export function MessageList() {
   const defaultAvatarByRole: Record<
     MessageData['role'],
-    NonNullable<MessageData['avatar']>
+    { src: string; name: string; time: string }
   > = {
     user: {
       src: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user1',
@@ -419,7 +68,17 @@ export function MessageList() {
   }
 
   const { setShowCanvas } = useAppState()
-  const [messages, setMessages] = useState<MessageData[]>(mockMessages)
+  const { messages, resumeStream, updateMessage } = useChatContext()
+  
+  // ✅ 添加自动滚动到底部的功能
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    // 当消息更新时，滚动到底部
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight
+    }
+  }, [messages])
 
   const updateThinkingTasklist = useCallback(
     (
@@ -432,51 +91,21 @@ export function MessageList() {
         Extract<MessageContent, { type: 'thinking' }>['tasklist']
       >
     ) => {
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) => {
-          if (msg.id !== messageId) {
-            return msg
-          }
-
-          if (Array.isArray(msg.content)) {
-            let updated = false
-            const nextContent = msg.content.map((item) => {
-              if (
-                typeof item === 'object' &&
-                item.type === 'thinking' &&
-                item.tasklist
-              ) {
-                updated = true
-                return {
-                  ...item,
-                  tasklist: update(item.tasklist),
-                }
-              }
-              return item
-            })
-
-            return updated ? { ...msg, content: nextContent } : msg
-          }
-
-          if (
-            typeof msg.content !== 'object' ||
-            msg.content.type !== 'thinking' ||
-            !msg.content.tasklist
-          ) {
-            return msg
-          }
-
-          return {
-            ...msg,
-            content: {
-              ...msg.content,
-              tasklist: update(msg.content.tasklist),
-            },
-          }
-        })
-      )
+      updateMessage(messageId, (message) => {
+        const thinkingContent = message.content as Extract<MessageContent, { type: 'thinking' }>
+        if (thinkingContent.type !== 'thinking' || !thinkingContent.tasklist) {
+          return message
+        }
+        return {
+          ...message,
+          content: {
+            ...thinkingContent,
+            tasklist: update(thinkingContent.tasklist),
+          },
+        }
+      })
     },
-    []
+    [updateMessage]
   )
 
   const updateTasklist = useCallback(
@@ -486,40 +115,43 @@ export function MessageList() {
         tasklist: Extract<MessageContent, { type: 'tasklist' }>
       ) => Extract<MessageContent, { type: 'tasklist' }>
     ) => {
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) => {
-          if (msg.id !== messageId) {
-            return msg
-          }
+      updateMessage(messageId, (message) => {
+        const tasklistContent = message.content as Extract<MessageContent, { type: 'tasklist' }>
+        if (tasklistContent.type !== 'tasklist') return message
+        return { ...message, content: update(tasklistContent) }
+      })
+    },
+    [updateMessage]
+  )
 
-          if (Array.isArray(msg.content)) {
-            let updated = false
-            const nextContent = msg.content.map((item) => {
-              if (typeof item === 'object' && item.type === 'tasklist') {
-                updated = true
-                return update(item)
-              }
-              return item
-            })
-
-            return updated ? { ...msg, content: nextContent } : msg
-          }
-
-          if (
-            typeof msg.content !== 'object' ||
-            msg.content.type !== 'tasklist'
-          ) {
-            return msg
-          }
-
+  /** 更新 thinking 中某一步的某个 item 的 data */
+  const updateThinkingStepItem = useCallback(
+    (
+      messageId: string,
+      itemKey: string,
+      update: (data: Record<string, unknown>) => Record<string, unknown>
+    ) => {
+      updateMessage(messageId, (message) => {
+        const content = message.content as Extract<MessageContent, { type: 'thinking' }>
+        if (content.type !== 'thinking') return message
+        const newBlocks = content.blocks.map((block) => {
+          if (block.type !== 'subSteps') return block
           return {
-            ...msg,
-            content: update(msg.content),
+            ...block,
+            steps: block.steps.map((step) => ({
+              ...step,
+              items: step.items?.map((item) => {
+                if (item.key !== itemKey) return item
+                const data = (item as { data?: Record<string, unknown> }).data ?? {}
+                return { ...item, data: update(data) }
+              }) ?? [],
+            })),
           }
         })
-      )
+        return { ...message, content: { ...content, blocks: newBlocks } }
+      })
     },
-    []
+    [updateMessage]
   )
 
   const onShowCanvas = useCallback(() => {
@@ -536,21 +168,22 @@ export function MessageList() {
       dataSource={tasklist.dataSource}
       title={tasklist.title || '待办清单'}
       status={tasklist.status || 'pending'}
-      editable={tasklist.editable ?? true}
+      editable={tasklist.status === 'pending'}
       onItemsChange={(items) => {
-        console.log('待办事项更新:', items)
         updateThinkingTasklist(messageId, (prev) => ({
           ...prev,
           dataSource: items,
           status: 'pending' as const,
+          editable: true,
         }))
       }}
       onConfirmExecute={() => {
-        console.log('确认执行')
         updateThinkingTasklist(messageId, (prev) => ({
           ...prev,
           status: 'confirmed' as const,
+          editable: false,
         }))
+        resumeStream({ tasklistData: tasklist.dataSource })
       }}
     />
   )
@@ -563,21 +196,22 @@ export function MessageList() {
       dataSource={content.dataSource}
       title={content.title || '待办清单'}
       status={content.status || 'pending'}
-      editable={content.editable ?? true}
+      editable={content.status === 'pending'}
       onItemsChange={(items) => {
-        console.log('待办事项更新:', items)
         updateTasklist(messageId, (prev) => ({
           ...prev,
           dataSource: items,
           status: 'pending' as const,
+          editable: true,
         }))
       }}
       onConfirmExecute={() => {
-        console.log('确认执行')
         updateTasklist(messageId, (prev) => ({
           ...prev,
           status: 'confirmed' as const,
+          editable: false,
         }))
+        resumeStream({ tasklistData: content.dataSource })
       }}
     />
   )
@@ -599,6 +233,106 @@ export function MessageList() {
             node: renderThinkingTaskList(content.tasklist, messageId),
           }
         }
+        if (block.type === 'subSteps') {
+          return {
+            ...block,
+            steps: block.steps.map((step) => ({
+              ...step,
+              items: step.items?.map((item) => {
+                const itemWithCustom = item as {
+                  key?: string
+                  customType?: 'dynamic_form' | 'confirm_panel'
+                  data?: Record<string, unknown>
+                  render?: (data: unknown) => React.ReactNode
+                }
+                if (itemWithCustom.customType === 'dynamic_form') {
+                  const data = itemWithCustom.data as unknown as DynamicFormItemData
+                  const schema: FormSchema = {
+                    title: data.schema?.title,
+                    fields: (data.schema?.fields ?? []) as FormSchema['fields'],
+                  }
+                  return {
+                    ...item,
+                    render: () => (
+                      <DynamicForm
+                        schema={schema}
+                        showActions={data.status === 'pending'}
+                        status={data.status}
+                        onFinish={(formData) => {
+                          if (data.status === 'confirmed') return
+                          updateThinkingStepItem(messageId, itemWithCustom.key!, () => ({
+                            ...data,
+                            status: 'confirmed',
+                          }))
+                          resumeStream({ formData })
+                        }}
+                      />
+                    ),
+                  }
+                }
+                if (itemWithCustom.customType === 'confirm_panel') {
+                  const data = itemWithCustom.data as unknown as ConfirmPanelItemData
+                  const cardsWithId = data.cards.map((card: { id?: string; title?: string; description?: string }, i: number) => ({
+                    ...card,
+                    _stableId: card.id ?? `card-${i}`,
+                  }))
+                  return {
+                    ...item,
+                    render: () => (
+                      <ConfirmPanel
+                        title="确认选择"
+                        status={data.status}
+                        confirmButtonText="确认"
+                        contentClassName="space-y-4"
+                        onConfirm={() => {
+                          if (data.selectedId && data.status === 'pending') {
+                            updateThinkingStepItem(messageId, itemWithCustom.key!, () => ({
+                              ...data,
+                              status: 'confirmed',
+                            }))
+                            resumeStream({ selectedCardId: data.selectedId })
+                          }
+                        }}
+                      >
+                        <p className="text-sm text-[var(--Text-text-primary)] mb-4">
+                          {data.text}
+                        </p>
+                        <div className="flex items-center gap-4">
+                          {cardsWithId
+                            .filter((c: { _stableId: string }) =>
+                              data.status === 'confirmed'
+                                ? c._stableId === data.selectedId
+                                : true
+                            )
+                            .map((c: { _stableId: string; title?: string; description?: string }) => {
+                              return (
+                                <ReportCard
+                                  key={c._stableId}
+                                  id={c._stableId}
+                                  title={c.title || ''}
+                                  description={c.description || ''}
+                                  showCheckbox={data.status === 'pending'}
+                                  selected={c._stableId === data.selectedId}
+                                  onSelectChange={(selected, id) => {
+                                    if (data.status === 'confirmed') return
+                                    updateThinkingStepItem(messageId, itemWithCustom.key!, () => ({
+                                      ...data,
+                                      selectedId: selected && id ? id : null,
+                                    }))
+                                  }}
+                                />
+                              )
+                            })}
+                        </div>
+                      </ConfirmPanel>
+                    ),
+                  }
+                }
+                return item
+              }) ?? [],
+            })),
+          }
+        }
         return block
       }
     )
@@ -612,24 +346,6 @@ export function MessageList() {
       />
     )
   }
-
-  const renderSteps = (content: Extract<MessageContent, { type: 'steps' }>) => (
-    <div className="flex flex-col gap-2">
-      {content.steps.map((step) => {
-        const { key, ...props } = step
-        return <ThinkingStepItem key={key} {...props} />
-      })}
-    </div>
-  )
-
-  const renderForm = (content: Extract<MessageContent, { type: 'form' }>) => (
-    <DynamicForm
-      schema={content.schema}
-      onFinish={(values) => {
-        console.log('表单提交:', values)
-      }}
-    />
-  )
 
   const renderDocumentCard = (
     content: Extract<MessageContent, { type: 'document-card' }>
@@ -668,12 +384,6 @@ export function MessageList() {
       case 'thinking':
         return renderThinking(content, messageId)
 
-      case 'form':
-        return renderForm(content)
-
-      case 'steps':
-        return renderSteps(content)
-
       case 'tasklist':
         return renderTaskList(content, messageId)
 
@@ -685,33 +395,51 @@ export function MessageList() {
     }
   }
 
+  /** AI 消息无内容时返回 null，让 AIMessage 显示 loading 状态 */
+  const isEmptyContent = (
+    content: string | MessageContent | Array<string | MessageContent>
+  ): boolean => {
+    if (typeof content === 'string') return !content.trim()
+    if (Array.isArray(content)) return content.length === 0
+    return false
+  }
+
   const renderedMessages: DemoMessageItem[] = messages.map((msg) => {
     const roleAvatar = defaultAvatarByRole[msg.role]
-    const avatar = msg.avatar ?? roleAvatar
+    const isGeneratingWithNoContent =
+      msg.role === 'ai' &&
+      msg.status === 'generating' &&
+      isEmptyContent(msg.content)
 
     return {
       id: msg.id,
       role: msg.role,
-      content: renderContent(msg.content, msg.id) as React.ReactNode,
+      content: isGeneratingWithNoContent
+        ? null
+        : (renderContent(msg.content, msg.id) as React.ReactNode),
       timestamp: msg.timestamp,
       avatar: {
-        src: avatar.src ?? roleAvatar.src,
-        name: avatar.name ?? roleAvatar.name,
-        time: avatar.time ?? roleAvatar.time,
+        src: roleAvatar.src,
+        name: roleAvatar.name,
+        time: roleAvatar.time,
       },
       contentForCopy: extractTextFromContent(msg.content),
+      status: msg.status,
     }
   })
 
   return (
-    <div className="flex flex-col h-full overflow-auto [scrollbar-gutter:stable]">
-        <MessageListComponent
-          className="max-w-[800px] w-auto mx-auto"
-          messages={renderedMessages}
-          showDefaultFeedback
-          onMessageClick={(msg) => console.log('消息点击:', msg.id)}
-          renderContent={(content) => content}
-        />
+    <div 
+      ref={scrollContainerRef}
+      className="flex flex-col h-full overflow-auto [scrollbar-gutter:stable]"
+    >
+      <MessageListComponent
+        className="w-full max-w-[800px] w-full mx-auto"
+        messages={renderedMessages}
+        showDefaultFeedback
+        onMessageClick={(msg) => console.log('消息点击:', msg.id)}
+        renderContent={(content) => content}
+      />
     </div>
   )
 }

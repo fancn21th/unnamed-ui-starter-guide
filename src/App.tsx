@@ -74,8 +74,6 @@ function App() {
           collapsedWidth: '0px',
           minWidth: isInMidRange ? '0px' : '240px',
           children: <DataSourcePanel />,
-          classNames: {
-          },
         }}
         leftPopover={{
           enabled: true,
