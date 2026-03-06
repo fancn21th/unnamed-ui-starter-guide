@@ -5,7 +5,7 @@ import { DataSourcePanel } from '@/views/data-source-panel'
 import { WorkspacePanel } from '@/views/workspace-panel'
 import { ChatView } from '@/views/chat-view'
 import { TaskView } from '@/views/task-view'
-import { DevPanel } from '@/views/dev-panel'
+// import { DevPanel } from '@/views/dev-panel'
 import {
   PageHeader,
   PageHeaderButtonGroup,
@@ -106,7 +106,7 @@ function App() {
         />
       </div>
       
-      <DevPanel />
+      {/* <DevPanel /> */}
     </>
   )
 }
