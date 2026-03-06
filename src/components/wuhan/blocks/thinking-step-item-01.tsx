@@ -803,6 +803,7 @@ const ThinkingStepItemRegularContentPrimitive = React.forwardRef<
         "leading-[var(--line-height-1)]",
         "font-normal",
         "text-[var(--Text-text-primary)]",
+        "break-all",
         className,
       )}
       {...props}
@@ -912,6 +913,7 @@ const ThinkingStepItemToolCallTitlePrimitive = React.forwardRef<
         "font-normal",
         "text-[var(--Text-text-secondary)]",
         "mr-[var(--Gap-gap-xs)]",
+        "break-all",
         className,
       )}
       {...props}
@@ -942,6 +944,7 @@ const ThinkingStepItemToolCallContentPrimitive = React.forwardRef<
         "font-normal",
         "text-[var(--Text-text-tertiary)]",
         "inline",
+        "break-all",
         className,
       )}
       {...props}
@@ -1195,6 +1198,7 @@ const ThinkingStepItemFileItemPrimitive = React.forwardRef<
           "leading-[var(--line-height-1)]",
           "font-normal",
           "text-[var(--Text-text-secondary)]",
+          "break-all",
         )}
       >
         {name}
