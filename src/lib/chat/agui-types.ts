@@ -54,10 +54,18 @@ export interface AGUIEvent {
   [key: string]: any
 }
 
-/** 恢复流时的 payload，对应后端 resume 接口 */
+/** 
+ * 恢复流时的 payload
+ * 注意：后端实际接口为 POST /agui/user-input，body格式为：
+ * { threadId, runId, userInput: { ...formData/tasklistData/selectedCardId } }
+ * 这里保持原有接口设计，在 chat-context 中统一转换
+ */
 export interface ResumeStreamPayload {
+  /** 表单数据（来自 dynamic_form） */
   formData?: Record<string, unknown>
+  /** 任务列表数据（来自 tasklist） */
   tasklistData?: TodoItem[]
+  /** 选中的卡片ID（来自 confirm_panel） */
   selectedCardId?: string
 }
 

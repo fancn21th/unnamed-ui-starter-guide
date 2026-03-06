@@ -47,6 +47,7 @@ export function ChatProvider({ children, apiUrl }: ChatProviderProps) {
   const [isLoading, setIsLoading] = React.useState(false)
   const [isPaused, setIsPaused] = React.useState(false)
   const [currentRunId, setCurrentRunId] = React.useState<string | null>(null)
+  const [currentThreadId, setCurrentThreadId] = React.useState<string | null>(null)
   
   const sseClientRef = React.useRef<SSEClient | null>(null)
   const adapterRef = React.useRef<AGUIAdapter | null>(null)
@@ -116,8 +117,10 @@ export function ChatProvider({ children, apiUrl }: ChatProviderProps) {
       setIsLoading(true)
       setIsPaused(false)
 
-      // 3. 生成 runId
+      // 3. 生成 threadId 和 runId
+      const threadId = `thread-${Date.now()}`
       const runId = `run-${Date.now()}`
+      setCurrentThreadId(threadId)
       setCurrentRunId(runId)
 
       // 4. 创建适配器（传入 resumeStream ref）
@@ -139,7 +142,7 @@ export function ChatProvider({ children, apiUrl }: ChatProviderProps) {
           url: `${finalApiUrl}/agui`,
           method: 'POST',
           body: {
-            threadId: `thread-${Date.now()}`,
+            threadId: threadId,
             runId,
             messages: [
               {
@@ -176,6 +179,7 @@ export function ChatProvider({ children, apiUrl }: ChatProviderProps) {
             setIsLoading(false)
             setIsPaused(false)
             setCurrentRunId(null)
+            setCurrentThreadId(null)
           },
         })
       } catch (error) {
@@ -206,27 +210,36 @@ export function ChatProvider({ children, apiUrl }: ChatProviderProps) {
   // 恢复流（用户完成交互后调用）
   const resumeStream = React.useCallback(
     async (payload?: ResumeStreamPayload) => {
-      if (!currentRunId) {
-        console.error('❌ 无法恢复：currentRunId 为空')
+      if (!currentRunId || !currentThreadId) {
+        console.error('❌ 无法恢复：threadId 或 runId 为空')
         return
       }
 
-      console.log('🔄 调用恢复接口 - runId:', currentRunId, 'payload:', payload)
+      console.log('🔄 调用恢复接口 - threadId:', currentThreadId, 'runId:', currentRunId, 'payload:', payload)
 
       try {
-        const response = await fetch(`${finalApiUrl}/agui/resume`, {
+        // 构造 userInput：将 formData/tasklistData/selectedCardId 统一为 userInput
+        const userInput = {
+          ...(payload?.formData || {}),
+          ...(payload?.tasklistData ? { tasklistData: payload.tasklistData } : {}),
+          ...(payload?.selectedCardId ? { selectedCardId: payload.selectedCardId } : {}),
+        }
+
+        const response = await fetch(`${finalApiUrl}/agui/user-input`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            threadId: currentThreadId,
             runId: currentRunId,
-            ...payload,
+            userInput: userInput,
           }),
         })
 
         if (!response.ok) {
-          throw new Error(`恢复失败: ${response.status} ${response.statusText}`)
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(`恢复失败: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`)
         }
 
         const result = await response.json()
@@ -250,7 +263,7 @@ export function ChatProvider({ children, apiUrl }: ChatProviderProps) {
         setMessages((prev) => [...prev, errorMessage])
       }
     },
-    [currentRunId, finalApiUrl]
+    [currentRunId, currentThreadId, finalApiUrl]
   )
 
   // 更新 resumeStream ref
